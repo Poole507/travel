@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="utf-8"/>
+    <title>系统后台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
+    <meta content="Themesdesign" name="author"/>
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link href="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet"
+          type="text/css"/>
+    <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css"/>
+
+    <link rel="stylesheet" type="text/css"  th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/layui/jquery-3.6.0.js}"></script>
+    <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+</head>
+<body>
+<div id="layout-wrapper">
+
+    <div th:include="home/menu"></div>
+    <div class="main-content">
+        <div class="page-content">
+            <!-- start page title -->
+            <div class="page-title-box">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <div class="page-title">
+                                <h4>景点管理</h4>
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">修改景点</a></li>
+
+                                </ol>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+            <div class="container-fluid">
+                <div class="page-content-wrapper">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form class="custom-validation" th:action="@{/updateGoods}" method="post" >
+                                        <input type="hidden" name="id"  th:value="${data.id}" class="layui-input" />
+
+                                        <div class="mb-3">
+                                            <label>名称</label>
+                                            <input type="text" name="names" th:value="${data.names}" class="form-control" required/>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="province_Id" class="form-label">选择景点类型</label>
+                                            <select class="form-select" id="Goods_id" name="category_id">
+                                                <option th:each="com:${categorylist}"
+                                                        th:selected="${com.id}==${data.category_id}"
+                                                        th:value="${com.id}" th:text="${com.name}"></option>
+                                            </select>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="province_Id" class="form-label">省份</label>
+                                                    <select class="form-select" id="province_Id" name="province_Id">
+
+                                                        <option th:each="com:${list}"
+                                                                th:selected="${com.province_Id}==${data.province_Id}"
+                                                                th:value="${com.province_Id}" th:text="${com.province_Name}"></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="city_Id" class="form-label">市区</label>
+                                                    <select class="form-select" name="city_Id" id="city_Id" required>
+                                                        <option th:each="com:${citylist}"
+                                                                th:selected="${com.city_Id}==${data.city_Id}"
+                                                                th:value="${com.city_Id}" th:text="${com.city_Name}"></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="area_Id" class="form-label">县区</label>
+                                                    <select class="form-select" name="area_Id" id="area_Id" required
+                                                            lay-verify="required">
+                                                        <option th:each="com:${arealist}"
+                                                                th:selected="${com.area_Id}==${data.area_Id}"
+                                                                th:value="${com.area_Id}" th:text="${com.area_Name}"></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="mb-3">
+                                            <label>详细地址</label>
+                                            <input type="text" th:value="${data.address}" name="address" class="form-control" required/>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>游客容纳人数</label>
+                                            <input type="number" th:value="${data.numbers}" name="numbers" class="form-control" required/>
+                                        </div>
+
+
+                                        <div class="mb-3">
+                                            <label>网站价</label>
+                                            <div>
+                                                <input type="number" th:value="${data.price}" name="price" class="form-control" required/>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>市场价</label>
+                                            <div>
+                                                <input type="number" name="normalprice" th:value="${data.normalprice}" class="form-control" required/>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>大致介绍</label>
+                                            <div>
+                                                <input type="text" name="content" th:value="${data.content}" class="form-control" required/>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <input type="hidden" name="photo" class="photo" th:value="${data.photo}">
+                                        <div class="layui-form-item">
+                                            <label >图片</label>
+                                            <div class="layui-upload">
+                                                <div class="layui-upload-list">
+                                                    <img class="layui-upload-img" th:src="${data.photo}" style="width:200px;height:100px;" id="demo1">
+                                                    <button type="button" class="layui-btn layui-btn-xs layui-btn-primary" id="test1">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <input type="hidden" name="detail" id="detail" th:value="${data.detail}"  />
+
+                                        <div class="mb-3">
+                                            <label >详情</label>
+                                            <div class="layui-form-item">
+                                            <div class="layui-input-inline" style="width:1000px;">
+                             <textarea name="content2" id="content2" placeholder="请输入规范内容"
+                                       class="layui-textarea"  th:utext="${data.detail}" style="display: none;"></textarea>
+                                            </div>
+                                        </div>
+                                        </div>
+                                        <div class="mb-0">
+                                            <div>
+                                                <button type="submit" id="save" class="btn btn-primary waves-effect waves-light me-1">
+                                                    提交
+                                                </button>
+                                                <button type="reset" class="btn btn-secondary waves-effect">
+                                                    重置
+                                                </button>
+                                                <a href="GoodsList" type="button" class="btn btn-dark waves-effect">
+                                                    返回
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div> <!-- end col -->
+
+
+                    </div> <!-- end row -->
+
+                </div>
+
+
+            </div> <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+
+
+    </div>
+    <!-- end main content-->
+
+</div>
+<!-- END layout-wrapper -->
+
+
+<!-- Right bar overlay-->
+<div class="rightbar-overlay"></div>
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#province_Id').change(function () {
+            var p1 = $(this).children('option:selected').val();//这就是selected的值
+            $.ajax({
+                cache: true,
+                type: "post",
+                url: "findCityByProId",
+                data: {"province_Id": p1},
+                async: false,
+                success: function (e) {
+                    if (e) {
+                        if (e.length > 0) {
+                            $("#city_Id").html("");
+                            var html = "<option value=" + ">" + "选择市区" + "</option>";
+                            for (var i = 0; i < e.length; i++) {
+                                html += "<option value="+e[i].city_Id+">"+e[i].city_Name+"</option> "
+
+                            }
+                            $("#city_Id").append(html);
+                        }
+                    } else {
+                        alert("查询失败");
+                    }
+                }
+            })
+        })
+        $('#city_Id').change(function () {
+            var p1 = $(this).children('option:selected').val();//这就是selected的值
+            $.ajax({
+                cache: true,
+                type: "post",
+                url: "findAreaByCityId",
+                data: {"city_Id": p1},
+                async: false,
+                success: function (e) {
+                    if (e) {
+                        if (e.length > 0) {
+                            $("#area_Id").html("");
+                            var html = "";
+                            var html = "<option value=" + ">" + "选择县区" + "</option>";
+
+                            for (var i = 0; i < e.length; i++) {
+                                html += "<option value=" + e[i].area_Id + ">" + e[i].area_Name + "</option> "
+                            }
+                            $("#area_Id").append(html);
+                        }
+                    } else {
+                        alert("查询失败");
+                    }
+                }
+            })
+        })
+    })
+</script>
+
+
+
+<script>
+    layui.use([ 'form','jquery','layer','upload','layedit','laydate' ], function() {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery,
+            layedit = layui.layedit,
+            laydate = layui.laydate,
+            upload = layui.upload;
+        form.render();//这句一定要加，占坑
+
+
+        layedit.set({
+            uploadImage: {
+                url: 'uploadconimage', //接口url
+                type: 'post' //默认post
+            }
+        });
+
+        let index2 = layedit.build('content2',{
+            tool: ['strong','italic','underline','del' ,'|','left','center','right','link','unlink','image'],
+            height: 650, //设置编辑器高度
+        });
+
+
+
+
+        var uploadInst = upload.render({
+            elem: '#test1'
+            ,url: 'upload'
+            ,accept:'images'
+            ,size:50000
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+                    $('#demo1').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                layer.msg('上传成功');
+
+                var fileupload = $(".photo");
+                fileupload.attr("value",res.data.src);
+                console.log(fileupload.attr("value"));
+            }
+            ,error: function(){
+                layer.msg('上传失败');
+            }
+        });
+        $("#save").click(function(){
+            let editContent2 = $.trim(layedit.getContent(index2));  //取值
+            $("#detail").val(editContent2);
+        });
+
+    })
+
+</script>
+
+</body>
+</html>

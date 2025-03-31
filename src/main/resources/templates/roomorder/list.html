@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>酒店预约管理 | 旅游网站后台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="旅游网站后台管理系统" name="description"/>
+    <meta content="Travel Admin" name="author"/>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <!-- Bootstrap Css -->
+    <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css"/>
+    <!-- Icons Css -->
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <!-- App Css-->
+    <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css"/>
+
+    <!-- DataTables -->
+    <link href="assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css"/>
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #0066CC;
+            --primary-light: #e6f0ff;
+            --primary-dark: #0055aa;
+            --secondary-color: #5AC8FA;
+            --text-color: #1d1d1f;
+            --text-light: #86868b;
+            --bg-color: #f5f5f7;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        /* 卡片样式 */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        /* 标题样式 */
+        .header-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 20px;
+        }
+        
+        .page-title h4 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+        
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        /* 表格样式 */
+        .table {
+            width: 100%;
+            margin-bottom: 0;
+            color: var(--text-color);
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table th {
+            font-weight: 600;
+            padding: 16px 12px;
+            border-bottom: 2px solid #f0f0f0;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            white-space: nowrap;
+            font-size: 14px;
+        }
+        
+        .table td {
+            padding: 16px 12px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 102, 204, 0.03);
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            padding: 10px 20px;
+            font-weight: 500;
+            border-radius: 30px;
+            transition: var(--transition);
+            box-shadow: none;
+        }
+        
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 13px;
+        }
+        
+        .btn-success {
+            background-color: #34c759;
+            border-color: #34c759;
+        }
+        
+        .btn-success:hover {
+            background-color: #2db84c;
+            border-color: #2db84c;
+            box-shadow: 0 4px 10px rgba(52, 199, 89, 0.3);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        }
+        
+        .btn-danger {
+            background-color: #ff3b30;
+            border-color: #ff3b30;
+        }
+        
+        .btn-danger:hover {
+            background-color: #e0352b;
+            border-color: #e0352b;
+            box-shadow: 0 4px 10px rgba(255, 59, 48, 0.3);
+        }
+        
+        /* 图片样式 */
+        .avatar-sm {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 50%;
+            transition: var(--transition);
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .avatar-sm:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 预约信息样式 */
+        .order-id {
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--primary-color);
+            background-color: var(--primary-light);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .hotel-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .room-type {
+            display: inline-block;
+            padding: 4px 10px;
+            background-color: #e6f7ff;
+            color: #0091ff;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .order-time {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+        
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .contact-name {
+            font-weight: 500;
+        }
+        
+        .contact-phone {
+            color: var(--text-light);
+            font-size: 13px;
+        }
+        
+        .remark {
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: var(--text-light);
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        .remark:hover {
+            color: var(--primary-color);
+        }
+        
+        /* 表格响应式 */
+        .table-responsive {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        /* 分页样式 */
+        .pagination {
+            margin-top: 20px;
+        }
+        
+        .page-item.active .page-link {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .page-link {
+            color: var(--primary-color);
+        }
+        
+        /* 工具提示 */
+        .tooltip-inner {
+            background-color: var(--text-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Begin page -->
+<div id="layout-wrapper">
+    <div th:include="home/menu"></div>
+
+    <div class="main-content">
+        <div class="page-content">
+            <!-- start page title -->
+            <div class="page-title-box">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <div class="page-title">
+                                <h4>酒店预约管理</h4>
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">首页</a></li>
+                                    <li class="breadcrumb-item active">酒店预约管理</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="container-fluid">
+                <div class="page-content-wrapper">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="header-title">预约订单列表</h4>
+                                    <p class="card-title-desc">管理所有用户的酒店预约订单</p>
+                                    
+                                    <div class="table-responsive">
+                                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>预约人</th>
+                                                    <th>头像</th>
+                                                    <th>酒店名称</th>
+                                                    <th>订单号</th>
+                                                    <th>房型</th>
+                                                    <th>预约时间</th>
+                                                    <th>联系人</th>
+                                                    <th>联系电话</th>
+                                                    <th>备注信息</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="data:${list}">
+                                                    <td><span class="order-id" th:text="${data.id}"></span></td>
+                                                    <td><span class="user-name" th:text="${data.user.realname}"></span></td>
+                                                    <td class="text-center">
+                                                        <img th:src="${data.user.photo}" alt="" class="avatar-sm">
+                                                    </td>
+                                                    <td><span class="hotel-name" th:text="${data.hotel.names}"></span></td>
+                                                    <td><span class="order-id" th:text="${data.rno}"></span></td>
+                                                    <td><span class="room-type" th:text="${data.room}"></span></td>
+                                                    <td><span class="order-time" th:text="${data.ctime}"></span></td>
+                                                    <td><span class="contact-name" th:text="${data.names}"></span></td>
+                                                    <td>
+                                                        <span class="contact-phone">
+                                                            <i class="mdi mdi-phone me-1"></i>
+                                                            <span th:text="${data.phone}"></span>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="remark" th:title="${data.content}" th:text="${data.content}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" th:onclick="deleteRoomOrder([[${data.id}]])" class="btn btn-danger btn-sm waves-effect waves-light">
+                                                            <i class="mdi mdi-trash-can me-1"></i>删除
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+                </div>
+            </div> <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+    </div>
+</div>
+
+<!-- 脚本 -->
+<script th:src="@{/assets/libs/jquery/jquery.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/bootstrap/js/bootstrap.bundle.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/metismenu/metisMenu.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/simplebar/simplebar.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/node-waves/waves.min.js}" charset="utf-8"></script>
+
+<!-- Required datatable js -->
+<script th:src="@{/assets/libs/datatables.net/js/jquery.dataTables.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js}" charset="utf-8"></script>
+
+<!-- Buttons examples -->
+<script th:src="@{/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/jszip/jszip.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/pdfmake/build/pdfmake.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/pdfmake/build/vfs_fonts.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/datatables.net-buttons/js/buttons.html5.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/datatables.net-buttons/js/buttons.print.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js}" charset="utf-8"></script>
+
+<!-- Datatable init js -->
+<script th:src="@{/assets/js/pages/datatables.init.js}" charset="utf-8"></script>
+<script th:src="@{/assets/js/app.js}" charset="utf-8"></script>
+
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    // 删除订单
+    function deleteRoomOrder(id) {
+        Swal.fire({
+            title: '确定要删除此预约订单吗?',
+            text: "删除后将无法恢复此订单信息!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff3b30',
+            cancelButtonColor: '#e2e2e2',
+            confirmButtonText: '确认删除',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    cache: true,
+                    url: "deleteRoomorder",
+                    data: {"id": id},
+                    type: "post",
+                    async: false,
+                    success: function (data) {
+                        if (data == 'yes') {
+                            Swal.fire({
+                                title: '删除成功!',
+                                text: '预约订单已被删除',
+                                icon: 'success',
+                                confirmButtonColor: '#0066CC'
+                            }).then(() => {
+                                document.location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: '删除失败!',
+                                text: '请稍后再试',
+                                icon: 'error',
+                                confirmButtonColor: '#0066CC'
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
+    // 保留原来的函数名作为别名
+    function del(id) {
+        deleteRoomOrder(id);
+    }
+    
+    // 应用样式
+    $(document).ready(function() {
+        // 应用样式
+        $('.dataTables_paginate > .pagination').addClass('pagination-rounded');
+        $('.dt-buttons').addClass('mb-3');
+        
+        // 初始化工具提示
+        $('[data-toggle="tooltip"]').tooltip();
+        
+        // 备注信息悬停效果
+        $('.remark').hover(function() {
+            var content = $(this).text();
+            if (content.length > 20) {
+                $(this).attr('title', content);
+            }
+        });
+    });
+</script>
+</body>
+</html>
+

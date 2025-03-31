@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en"xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>旅游网站</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="static/picture/favicon.svg">
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="static/css/main.css">
+</head>
+
+<body>
+<!-- Quick view -->
+<div th:include="index/header"></div>
+
+<!--End header-->
+<main class="main">
+    <!--轮播开始-->
+    <section class="home-slider style-2 position-relative mb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12 col-lg-12">
+                    <div class="home-slide-cover">
+                        <div class="hero-slider-1 style-4 dot-style-1 dot-style-1-position-1">
+                            <div th:each="data:${bannerlist}" class="single-hero-slider single-animation-wrap"  th:style="'background-image:url(' + ${data.photo}+ ')'">
+                                <div class="slider-content">
+                                    <h1 class="display-2 mb-40" th:text="${data.title}"></h1>
+                                    <p class="mb-65" ></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slider-arrow hero-slider-1-arrow"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!--轮播结束-->
+    <!--侧标题结束s-->
+    <!--热门景点-->
+    <section class="product-tabs section-padding position-relative">
+        <div class="container">
+            <div class="section-title">
+                <h2>景点大全</h2>
+                <p>探索精选旅游胜地</p>
+            </div>
+            
+            <div class="spots-grid">
+                <div class="row justify-content-center">
+                    <div class="col-lg-4 col-md-6" th:each="data,datasize:${goodslist}" th:if="${datasize.index} lt 5">
+                        <div class="spot-card">
+                            <div class="spot-image">
+                                <a th:href="@{/toGoodsDetail(id=${data.id})}">
+                                    <img th:src="${data.photo}" alt="">
+                                </a>
+                            </div>
+                            <div class="spot-content">
+                                <div class="spot-category" th:text="${data.category.name}"></div>
+                                <h3><a th:href="@{/toGoodsDetail(id=${data.id})}" th:text="${data.names}"></a></h3>
+                                <div class="spot-price">
+                                    <span class="current" th:text="${data.price}"></span>
+                                    <span class="original" th:text="${data.normalprice}"></span>
+                                </div>
+                                <button class="favorite-btn" th:onclick="addcart([[${data.id}]])">
+                                    <span>收藏</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--热门景点-->
+    <section class="hot-spots-section">
+        <div class="container">
+            <div class="section-title">
+                <h3>热门景点前5</h3>
+                <p>探索最受欢迎的旅游目的地</p>
+            </div>
+            
+            <div class="row">
+                <!-- 左侧两个卡片 -->
+                <div class="col-lg-5">
+                    <div class="left-spots-container">
+                        <div th:each="data,datas:${goodslistSalenums}" th:if="${datas.index} < 2" class="hot-spot-card">
+                            <div class="rank-badge" th:text="'0' + ${datas.index+1}"></div>
+                            <div class="card-image">
+                                <a th:href="@{/toGoodsDetail(id=${data.id})}">
+                                    <img th:src="${data.photo}" alt="">
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <div class="category" th:text="${data.category.name}"></div>
+                                <h3><a th:href="@{/toGoodsDetail(id=${data.id})}" th:text="${data.names}"></a></h3>
+                                <div class="card-footer">
+                                    <div class="price-info">
+                                        <span class="price" th:text="'￥'+${data.price}"></span>
+                                        <span class="old-price" th:text="'￥'+${data.normalprice}"></span>
+                                    </div>
+                                    <div class="sales" th:text="'已售'+${data.salenums}"></div>
+                                    <button class="collect-btn" th:onclick="addcart([[${data.id}]])">
+                                        <i class="fi-rs-heart"></i>
+                                        <span>收藏</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧三个卡片 -->
+                <div class="col-lg-7">
+                    <div class="right-spots-container">
+                        <div th:each="data,datas:${goodslistSalenums}" th:if="${datas.index} >= 2" class="hot-spot-card">
+                            <div class="rank-badge" th:text="'0' + ${datas.index+1}"></div>
+                            <div class="card-image">
+                                <a th:href="@{/toGoodsDetail(id=${data.id})}">
+                                    <img th:src="${data.photo}" alt="">
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <div class="category" th:text="${data.category.name}"></div>
+                                <h3><a th:href="@{/toGoodsDetail(id=${data.id})}" th:text="${data.names}"></a></h3>
+                                <div class="card-footer">
+                                    <div class="price-info">
+                                        <span class="price" th:text="'￥'+${data.price}"></span>
+                                    </div>
+                                    <div class="sales" th:text="'已售'+${data.salenums}"></div>
+                                    <button class="collect-btn" th:onclick="addcart([[${data.id}]])">
+                                        <i class="fi-rs-heart"></i>
+                                        <span>收藏</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--旅游攻略-->
+    <section class="travel-guides-section">
+        <div class="container">
+            <div class="section-header">
+                <h3>旅游攻略动态</h3>
+                <a class="view-all" href="/toBoard">
+                    全部旅游攻略
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+            </div>
+            
+            <div class="guides-grid">
+                <div class="guides-container" th:with="count=${#lists.size(boardlist)}">
+                    <!-- 当只有1-2个攻略时的布局 -->
+                    <div th:if="${count <= 2}" class="guides-layout-few">
+                        <div th:each="data:${boardlist}" class="guide-card guide-card-large">
+                            <div class="guide-image">
+                                <a th:href="@{/toBoard_detail(id=${data.id})}">
+                                    <img th:src="${data.photo}" alt="">
+                                </a>
+                            </div>
+                            <div class="guide-content">
+                                <h4><a th:href="@{/toBoard_detail(id=${data.id})}" th:text="${data.title}"></a></h4>
+                                <div class="guide-meta">
+                                    <span class="date" th:text="${data.create_time}"></span>
+                                </div>
+                                <a th:href="@{/toBoard_detail(id=${data.id})}" class="read-more">
+                                    阅读全文
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 当有3个攻略时的布局 -->
+                    <div th:if="${count == 3}" class="guides-layout-three">
+                        <div th:each="data,stat:${boardlist}" th:class="${stat.index == 0} ? 'guide-card guide-card-featured' : 'guide-card'">
+                            <div class="guide-image">
+                                <a th:href="@{/toBoard_detail(id=${data.id})}">
+                                    <img th:src="${data.photo}" alt="">
+                                </a>
+                            </div>
+                            <div class="guide-content">
+                                <h4><a th:href="@{/toBoard_detail(id=${data.id})}" th:text="${data.title}"></a></h4>
+                                <div class="guide-meta">
+                                    <span class="date" th:text="${data.create_time}"></span>
+                                </div>
+                                <a th:href="@{/toBoard_detail(id=${data.id})}" class="read-more">
+                                    阅读全文
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 当有4个攻略时的布局 -->
+                    <div th:if="${count == 4}" class="guides-layout-four">
+                        <div th:each="data,stat:${boardlist}" class="guide-card">
+                            <div class="guide-image">
+                                <a th:href="@{/toBoard_detail(id=${data.id})}">
+                                    <img th:src="${data.photo}" alt="">
+                                </a>
+                            </div>
+                            <div class="guide-content">
+                                <h4><a th:href="@{/toBoard_detail(id=${data.id})}" th:text="${data.title}"></a></h4>
+                                <div class="guide-meta">
+                                    <span class="date" th:text="${data.create_time}"></span>
+                                </div>
+                                <a th:href="@{/toBoard_detail(id=${data.id})}" class="read-more">
+                                    阅读全文
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 当有5个攻略时的布局 -->
+                    <div th:if="${count >= 5}" class="guides-layout-five">
+                        <div th:each="data,stat:${boardlist}" th:if="${stat.index < 5}" class="guide-card">
+                            <div class="guide-image">
+                                <a th:href="@{/toBoard_detail(id=${data.id})}">
+                                    <img th:src="${data.photo}" alt="">
+                                </a>
+                            </div>
+                            <div class="guide-content">
+                                <h4><a th:href="@{/toBoard_detail(id=${data.id})}" th:text="${data.title}"></a></h4>
+                                <div class="guide-meta">
+                                    <span class="date" th:text="${data.create_time}"></span>
+                                </div>
+                                <a th:href="@{/toBoard_detail(id=${data.id})}" class="read-more">
+                                    阅读全文
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--3个子类-->
+    <section class="featured-categories-section">
+        <div class="container">
+            <div class="section-title text-center">
+                <h2>精选推荐</h2>
+                <p>探索更多精彩内容</p>
+            </div>
+            
+            <div class="featured-tabs">
+                <div class="row">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="featured-card">
+                            <div class="card-header">
+                                <h3>收藏最高</h3>
+                                <div class="card-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M19.4626 3.99415C16.7809 2.34923 14.4404 3.01211 13.0344 4.06801C12.4578 4.50096 12.1696 4.71743 12 4.71743C11.8304 4.71743 11.5422 4.50096 10.9656 4.06801C9.55962 3.01211 7.21909 2.34923 4.53744 3.99415C1.01807 6.15294 0.221721 13.2749 8.33953 19.2834C9.88572 20.4278 10.6588 21 12 21C13.3412 21 14.1143 20.4278 15.6605 19.2834C23.7783 13.2749 22.9819 6.15294 19.4626 3.99415Z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <div class="items-container">
+                                <div th:each="data:${goodslistcollectnums}" class="featured-item">
+                                    <div class="item-image">
+                                        <a th:href="@{/toGoodsDetail(id=${data.id})}">
+                                            <img th:src="${data.photo}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="item-content">
+                                        <h4><a th:href="@{/toGoodsDetail(id=${data.id})}" th:text="${data.names}"></a></h4>
+                                        <div class="item-price">
+                                            <span class="current" th:text="'￥'+${data.price}"></span>
+                                            <span class="original" th:text="'￥'+${data.normalprice}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="featured-card">
+                            <div class="card-header">
+                                <h3>热门景点</h3>
+                                <div class="card-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8.5 14.5L5 18L18 18L14.5 14.5M8.5 14.5L12 11L14.5 14.5M8.5 14.5L5.5 11.5L2 14M14.5 14.5L19 10M7 7L12 2L17 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <div class="items-container">
+                                <div th:each="data:${goodslisthot}" class="featured-item">
+                                    <div class="item-image">
+                                        <a th:href="@{/toGoodsDetail(id=${data.id})}">
+                                            <img th:src="${data.photo}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="item-content">
+                                        <h4><a th:href="@{/toGoodsDetail(id=${data.id})}" th:text="${data.names}"></a></h4>
+                                        <div class="item-price">
+                                            <span class="current" th:text="'￥'+${data.price}"></span>
+                                            <span class="original" th:text="'￥'+${data.normalprice}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="featured-card">
+                            <div class="card-header">
+                                <h3>最新发布</h3>
+                                <div class="card-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <div class="items-container">
+                                <div th:each="data:${goodslistnew}" class="featured-item">
+                                    <div class="item-image">
+                                        <a th:href="@{/toGoodsDetail(id=${data.id})}">
+                                            <img th:src="${data.photo}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="item-content">
+                                        <h4><a th:href="@{/toGoodsDetail(id=${data.id})}" th:text="${data.names}"></a></h4>
+                                        <div class="item-price">
+                                            <span class="current" th:text="'￥'+${data.price}"></span>
+                                            <span class="original" th:text="'￥'+${data.normalprice}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="featured-card">
+                            <div class="card-header">
+                                <h3>热度最高</h3>
+                                <div class="card-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M18.7273 14.7273C18.6063 15.0909 18.6273 15.4727 18.8023 15.8182C18.9745 16.1636 19.2791 16.4273 19.6364 16.5454L19.9091 16.6364C20.3273 16.7727 20.6618 17.0454 20.8691 17.4091C21.0764 17.7727 21.1418 18.2 21.0655 18.6182C20.9891 19.0364 20.7709 19.4091 20.4418 19.6727C20.1127 19.9364 19.6873 20.0727 19.2545 20.0545H18.9273C18.5618 20.0545 18.2073 20.1818 17.9345 20.4091C17.6618 20.6364 17.4818 20.9545 17.4273 21.3091C17.3455 21.8545 17.0618 22.3455 16.6364 22.6909C16.2109 23.0364 15.6618 23.2 15.1091 23.1455C14.5564 23.0909 14.0473 22.8182 13.6873 22.3909C13.3273 21.9636 13.1418 21.4182 13.1818 20.8636V20.6364C13.1982 20.2545 13.0873 19.8818 12.8618 19.5636C12.6364 19.2455 12.3127 19.0091 11.9455 18.8909C11.5891 18.7727 11.2073 18.7727 10.8509 18.8909C10.4945 19.0091 10.1709 19.2455 9.94545 19.5636L9.8 19.7636C9.44 20.1909 8.93091 20.4636 8.37818 20.5182C7.82545 20.5727 7.27636 20.4091 6.85091 20.0636C6.42545 19.7182 6.14182 19.2273 6.06 18.6818C5.97818 18.1364 6.11273 17.5818 6.44 17.1455L6.56 16.9818C6.78545 16.6636 6.90545 16.2909 6.88909 15.9091C6.87273 15.5273 6.72 15.1636 6.46909 14.8727C6.22545 14.5909 5.89091 14.3909 5.52727 14.3091C5.16364 14.2273 4.78182 14.2636 4.43636 14.4182L4.18182 14.5273C3.65455 14.7636 3.05455 14.7909 2.50909 14.6C1.96364 14.4091 1.51273 14.0182 1.27636 13.5C1.03273 12.9727 1.01818 12.3727 1.23273 11.8364C1.44727 11.3 1.87273 10.8727 2.4 10.6545L2.62727 10.5636C2.98182 10.4455 3.28727 10.2182 3.49091 9.91818C3.69455 9.61818 3.78182 9.25455 3.74545 8.89091C3.71636 8.52727 3.56364 8.18182 3.31273 7.90909C3.06182 7.63636 2.72727 7.45455 2.36364 7.4L2.05455 7.34545C1.52727 7.25455 1.05455 6.96364 0.730909 6.53636C0.407273 6.10909 0.254545 5.57273 0.309091 5.03636C0.363636 4.5 0.618182 4 1.02727 3.63636C1.43636 3.27273 1.96364 3.07273 2.50909 3.07273H2.8C3.16364 3.07273 3.51636 2.95455 3.8 2.73636C4.08364 2.51818 4.28 2.21818 4.35455 1.88182C4.44545 1.35455 4.73636 0.881818 5.16364 0.558182C5.59091 0.234545 6.12727 0.0818182 6.66364 0.136364C7.2 0.190909 7.7 0.445455 8.06364 0.854545C8.42727 1.26364 8.62727 1.79091 8.62727 2.33636V2.56364C8.62727 2.94545 8.74545 3.31636 8.97273 3.61818C9.2 3.92 9.52 4.14545 9.88364 4.25455C10.24 4.36364 10.6218 4.36364 10.9782 4.25455C11.3345 4.14545 11.6545 3.92 11.8818 3.61818L12.0273 3.41818C12.3873 2.99091 12.8964 2.71818 13.4491 2.66364C14.0018 2.60909 14.5509 2.77273 14.9764 3.11818C15.4018 3.46364 15.6855 3.95455 15.7673 4.5C15.8491 5.04545 15.7145 5.6 15.3873 6.03636L15.2673 6.2C15.0418 6.51818 14.9218 6.89091 14.9382 7.27273C14.9545 7.65455 15.0873 8.01818 15.3382 8.30909C15.5818 8.59091 15.9164 8.79091 16.28 8.87273C16.6436 8.95455 17.0255 8.91818 17.3709 8.76364L17.6255 8.65455C18.1527 8.41818 18.7527 8.39091 19.2982 8.58182C19.8436 8.77273 20.2945 9.16364 20.5309 9.68182C20.7745 10.2091 20.7891 10.8091 20.5745 11.3455C20.36 11.8818 19.9345 12.3091 19.4073 12.5273L19.18 12.6182C18.8255 12.7364 18.52 12.9636 18.3164 13.2636C18.1127 13.5636 18.0255 13.9273 18.0618 14.2909L18.7273 14.7273Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <div class="items-container">
+                                <div th:each="data:${goodslistsee}" class="featured-item">
+                                    <div class="item-image">
+                                        <a th:href="@{/toGoodsDetail(id=${data.id})}">
+                                            <img th:src="${data.photo}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="item-content">
+                                        <h4><a th:href="@{/toGoodsDetail(id=${data.id})}" th:text="${data.names}"></a></h4>
+                                        <div class="item-price">
+                                            <span class="current" th:text="'￥'+${data.price}"></span>
+                                            <span class="original" th:text="'￥'+${data.normalprice}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--End 4 columns-->
+    <section class="category-section">
+        <div class="container">
+            <div class="section-header">
+                <h3>景点类型</h3>
+                <p>选择您感兴趣的旅游类别</p>
+            </div>
+            
+            <div class="categories-grid">
+                <div class="row justify-content-center">
+                    <div th:each="data:${categorylist}" class="col-lg-2 col-md-3 col-sm-4 col-6">
+                        <a th:href="@{/toGoods(category_id=${data.id})}" class="category-card">
+                            <div class="category-icon">
+                                <img th:src="${data.photo}" alt="">
+                            </div>
+                            <h4 th:text="${data.name}"></h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<div th:include="index/footer"></div>
+<!-- Preloader Start -->
+<div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="text-center">
+                <img src="static/picture/loading.gif" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Vendor JS-->
+<script src="static/js/modernizr-3.6.0.min.js"></script>
+<script src="static/js/jquery-3.6.0.min.js"></script>
+<script src="static/js/jquery-migrate-3.3.0.min.js"></script>
+<script src="static/js/bootstrap.bundle.min.js"></script>
+<script src="static/js/slick.js"></script>
+<script src="static/js/jquery.syotimer.min.js"></script>
+<script src="static/js/wow.js"></script>
+<script src="static/js/jquery-ui.js"></script>
+<script src="static/js/perfect-scrollbar.js"></script>
+<script src="static/js/magnific-popup.js"></script>
+<script src="static/js/select2.min.js"></script>
+<script src="static/js/waypoints.js"></script>
+<script src="static/js/counterup.js"></script>
+<script src="static/js/jquery.countdown.min.js"></script>
+<script src="static/js/images-loaded.js"></script>
+<script src="static/js/isotope.js"></script>
+<script src="static/js/scrollup.js"></script>
+<script src="static/js/jquery.vticker-min.js"></script>
+<script src="static/js/jquery.theia.sticky.js"></script>
+<script src="static/js/jquery.elevatezoom.js"></script>
+<!-- Template  JS -->
+<script src="static/js/main.js"></script>
+<script src="static/js/shop.js"></script>
+
+<link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+<script th:src="@{/assets/libs/sweetalert2/sweetalert2.min.js}" src=""></script>
+<script th:src="@{/assets/js/pages/sweet-alerts.init.js}" src=""></script>
+<script>
+
+
+
+    function addcart(id) {
+        Swal.fire({
+            title: "确定加入收藏吗?",
+            icon: "info",
+            showCancelButton: !0,
+            confirmButtonColor: "#1cbb8c",
+            cancelButtonColor: "#f14e4e",
+            confirmButtonText: '确认',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    cache: true,
+                    url: "addShopcart",
+                    data: {"goods_id": id,"nums":1},
+                    type: "post",
+                    async: false,
+                    success: function (data) {
+                        if (data == 'yes') {
+                            result.value && Swal.fire("加入成功!", "操作完成", "success", ).then(function () {
+                                document.location.reload()
+                            })
+                        } else  if (data == 'no') {
+                            result.value && Swal.fire("加入失败!", "请先登录", "error", ).then(function () {
+                                document.location.reload()
+                            })
+
+                        }
+                    },
+                    complete : function(xhr, status) {
+                        if(status=='error'){
+                            alert("请先登录！")
+                        }
+                        //拦截器实现超时跳转到登录页面
+                        // 通过xhr取得响应头
+                        var REDIRECT = xhr.getResponseHeader("REDIRECT");
+                        //如果响应头中包含 REDIRECT 则说明是拦截器返回的需要重定向的请求
+                        if (REDIRECT == "REDIRECT")
+                        {
+                            var win = window;
+                            while (win != win.top)
+                            {
+                                win = win.top;
+                            }
+
+                            win.location.href = xhr.getResponseHeader("CONTEXTPATH");
+                        }
+                    }
+                });
+            }
+        })
+    }
+</script>
+</body>
+
+</html>
+
+<style>
+    /* 景点大全样式 */
+    .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    .section-title h2 {
+        font-size: 48px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 12px;
+        letter-spacing: -0.003em;
+    }
+
+    .section-title p {
+        font-size: 24px;
+        color: #86868b;
+        font-weight: 400;
+    }
+
+    .spots-grid {
+        padding: 0 20px;
+    }
+
+    .spot-card {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .spot-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.1);
+    }
+
+    .spot-image {
+        position: relative;
+        padding-top: 66.67%;
+        overflow: hidden;
+    }
+
+    .spot-image img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .spot-card:hover .spot-image img {
+        transform: scale(1.05);
+    }
+
+    .spot-content {
+        padding: 24px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .spot-category {
+        font-size: 14px;
+        color: #0066CC;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .spot-content h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        line-height: 1.3;
+    }
+
+    .spot-content h3 a {
+        color: #1d1d1f;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .spot-content h3 a:hover {
+        color: #0066CC;
+    }
+
+    .spot-price {
+        margin-bottom: 20px;
+        margin-top: auto;
+    }
+
+    .spot-price .current {
+        font-size: 24px;
+        font-weight: 600;
+        color: #0066CC;
+    }
+
+    .spot-price .original {
+        font-size: 16px;
+        color: #86868b;
+        text-decoration: line-through;
+        margin-left: 8px;
+    }
+
+    .favorite-btn {
+        width: 100%;
+        padding: 14px 24px;
+        background: #0066CC;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .favorite-btn:hover {
+        background: #0052CC;
+        transform: translateY(-2px);
+    }
+
+    .favorite-btn:active {
+        transform: translateY(0);
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 768px) {
+        .section-title h2 {
+            font-size: 36px;
+        }
+
+        .section-title p {
+            font-size: 20px;
+        }
+
+        .spot-content {
+            padding: 20px;
+        }
+
+        .spot-content h3 {
+            font-size: 18px;
+        }
+    }
+
+    /* 热门景点样式 */
+    .hot-spots-section {
+        padding: 70px 0;
+        background: linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    
+    .section-title h3 {
+        font-size: 36px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 10px;
+    }
+    
+    .section-title p {
+        font-size: 18px;
+        color: #86868b;
+    }
+    
+    /* 左侧容器 */
+    .left-spots-container {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 20px;
+        height: 100%;
+    }
+    
+    /* 右侧容器 */
+    .right-spots-container {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 20px;
+        height: 100%;
+    }
+    
+    /* 右侧卡片样式 */
+    .right-spots-container .hot-spot-card {
+        display: flex;
+        flex-direction: row;
+        height: auto;
+    }
+    
+    .right-spots-container .card-image {
+        flex: 0 0 180px;
+        height: 140px;
+    }
+    
+    .right-spots-container .card-content {
+        flex: 1;
+        padding: 15px;
+    }
+    
+    .right-spots-container .card-content h3 {
+        height: auto;
+        margin-bottom: 10px;
+    }
+    
+    .right-spots-container .card-footer {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* 卡片基础样式 */
+    .hot-spot-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 102, 204, 0.08);
+        transition: all 0.4s ease;
+        height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .hot-spot-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 40px rgba(0, 102, 204, 0.15);
+    }
+    
+    /* 图片样式 */
+    .card-image {
+        height: 180px;
+        overflow: hidden;
+    }
+    
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+    
+    .hot-spot-card:hover .card-image img {
+        transform: scale(1.08);
+    }
+    
+    /* 排名标签 */
+    .rank-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: rgba(0, 102, 204, 0.9);
+        color: white;
+        font-size: 14px;
+        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: 8px;
+        z-index: 2;
+        backdrop-filter: blur(4px);
+    }
+    
+    /* 内容区域 */
+    .card-content {
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    
+    .category {
+        font-size: 13px;
+        color: #0066CC;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+    
+    .card-content h3 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        height: 42px;
+    }
+    
+    .card-content h3 a {
+        color: #1d1d1f;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    
+    .card-content h3 a:hover {
+        color: #0066CC;
+    }
+    
+    /* 卡片底部 */
+    .card-footer {
+        margin-top: auto;
+    }
+    
+    .price-info {
+        margin-bottom: 8px;
+    }
+    
+    .price {
+        font-size: 18px;
+        font-weight: 600;
+        color: #0066CC;
+    }
+    
+    .old-price {
+        font-size: 14px;
+        color: #86868b;
+        text-decoration: line-through;
+        margin-left: 6px;
+    }
+    
+    .sales {
+        font-size: 13px;
+        color: #86868b;
+        margin-bottom: 12px;
+    }
+    
+    /* 收藏按钮 */
+    .collect-btn {
+        width: 100%;
+        padding: 10px;
+        background: #0066CC;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .collect-btn:hover {
+        background: #0052CC;
+        transform: translateY(-2px);
+    }
+    
+    .collect-btn:active {
+        transform: translateY(0);
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 992px) {
+        .left-spots-container, 
+        .right-spots-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .right-spots-container .hot-spot-card {
+            flex-direction: column;
+        }
+        
+        .right-spots-container .card-image {
+            flex: none;
+            width: 100%;
+            height: 180px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .section-title h3 {
+            font-size: 28px;
+        }
+        
+        .section-title p {
+            font-size: 16px;
+        }
+    }
+
+    /* 旅游攻略样式 */
+    .travel-guides-section {
+        padding: 80px 0;
+        background: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+    
+    .section-header h3 {
+        font-size: 36px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0;
+    }
+    
+    .view-all {
+        display: flex;
+        align-items: center;
+        color: #0066CC;
+        font-size: 16px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .view-all svg {
+        margin-left: 6px;
+        transition: transform 0.3s ease;
+    }
+    
+    .view-all:hover {
+        color: #0052CC;
+    }
+    
+    .view-all:hover svg {
+        transform: translateX(3px);
+    }
+    
+    /* 攻略卡片网格 */
+    .guides-grid {
+        margin-bottom: 20px;
+    }
+    
+    /* 攻略卡片样式 */
+    .guide-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 102, 204, 0.08);
+        transition: all 0.4s ease;
+        margin-bottom: 30px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .guide-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 40px rgba(0, 102, 204, 0.15);
+    }
+    
+    .guide-image {
+        height: 220px;
+        overflow: hidden;
+    }
+    
+    .guide-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+    
+    .guide-card:hover .guide-image img {
+        transform: scale(1.08);
+    }
+    
+    .guide-content {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    
+    .guide-content h4 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+    
+    .guide-content h4 a {
+        color: #1d1d1f;
+        text-decoration: none;
+        transition: color 0.3s;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .guide-content h4 a:hover {
+        color: #0066CC;
+    }
+    
+    .guide-meta {
+        margin-bottom: 20px;
+    }
+    
+    .date {
+        font-size: 14px;
+        color: #86868b;
+    }
+    
+    .read-more {
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        color: #0066CC;
+        font-size: 15px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .read-more svg {
+        margin-left: 6px;
+        transition: transform 0.3s ease;
+    }
+    
+    .read-more:hover {
+        color: #0052CC;
+    }
+    
+    .read-more:hover svg {
+        transform: translateX(3px);
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 992px) {
+        .section-header h3 {
+            font-size: 30px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .travel-guides-section {
+            padding: 60px 0;
+        }
+        
+        .section-header h3 {
+            font-size: 26px;
+        }
+        
+        .guide-image {
+            height: 180px;
+        }
+        
+        .guide-content {
+            padding: 20px;
+        }
+        
+        .guide-content h4 {
+            font-size: 18px;
+        }
+    }
+
+    /* 添加新的布局样式 */
+    .guides-container {
+        width: 100%;
+    }
+    
+    /* 1-2个攻略的布局 */
+    .guides-layout-few {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+        gap: 30px;
+    }
+    
+    .guide-card-large .guide-image {
+        height: 300px;
+    }
+    
+    /* 3个攻略的布局 */
+    .guides-layout-three {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto auto;
+        gap: 30px;
+    }
+    
+    .guides-layout-three .guide-card-featured {
+        grid-column: 1;
+        grid-row: 1 / 3;
+    }
+    
+    .guides-layout-three .guide-card-featured .guide-image {
+        height: 400px;
+    }
+    
+    /* 4个攻略的布局 */
+    .guides-layout-four {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 30px;
+    }
+    
+    /* 5个攻略的布局 */
+    .guides-layout-five {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: auto auto;
+        gap: 30px;
+    }
+    
+    .guides-layout-five .guide-card:first-child {
+        grid-column: 1 / 3;
+        grid-row: 1;
+    }
+    
+    .guides-layout-five .guide-card:first-child .guide-image {
+        height: 300px;
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 992px) {
+        .guides-layout-few,
+        .guides-layout-three,
+        .guides-layout-four,
+        .guides-layout-five {
+            grid-template-columns: 1fr;
+        }
+        
+        .guides-layout-three .guide-card-featured,
+        .guides-layout-five .guide-card:first-child {
+            grid-column: 1;
+            grid-row: auto;
+        }
+        
+        .guide-card-large .guide-image,
+        .guides-layout-three .guide-card-featured .guide-image,
+        .guides-layout-five .guide-card:first-child .guide-image {
+            height: 220px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .guides-layout-few {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* 精选推荐样式 */
+    .featured-categories-section {
+        padding: 80px 0;
+        background: linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
+    }
+    
+    .section-title {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    
+    .section-title h2 {
+        font-size: 40px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 10px;
+    }
+    
+    .section-title p {
+        font-size: 20px;
+        color: #86868b;
+    }
+    
+    /* 卡片样式 */
+    .featured-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 102, 204, 0.08);
+        height: 100%;
+        transition: all 0.4s ease;
+    }
+    
+    .featured-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 40px rgba(0, 102, 204, 0.15);
+    }
+    
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid #f2f2f7;
+    }
+    
+    .card-header h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0;
+    }
+    
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0066CC;
+        color: white;
+        border-radius: 12px;
+    }
+    
+    /* 项目容器 */
+    .items-container {
+        padding: 20px;
+    }
+    
+    /* 项目样式 */
+    .featured-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f2f2f7;
+    }
+    
+    .featured-item:last-child {
+        border-bottom: none;
+    }
+    
+    .item-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 12px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    
+    .item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+    
+    .featured-item:hover .item-image img {
+        transform: scale(1.08);
+    }
+    
+    .item-content {
+        flex: 1;
+        padding-left: 16px;
+    }
+    
+    .item-content h4 {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        line-height: 1.3;
+    }
+    
+    .item-content h4 a {
+        color: #1d1d1f;
+        text-decoration: none;
+        transition: color 0.3s;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .item-content h4 a:hover {
+        color: #0066CC;
+    }
+    
+    .item-price {
+        display: flex;
+        align-items: center;
+    }
+    
+    .item-price .current {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0066CC;
+    }
+    
+    .item-price .original {
+        font-size: 14px;
+        color: #86868b;
+        text-decoration: line-through;
+        margin-left: 8px;
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 992px) {
+        .featured-card {
+            margin-bottom: 30px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .featured-categories-section {
+            padding: 60px 0;
+        }
+        
+        .section-title h2 {
+            font-size: 32px;
+        }
+        
+        .section-title p {
+            font-size: 18px;
+        }
+        
+        .card-header {
+            padding: 16px 20px;
+        }
+        
+        .card-header h3 {
+            font-size: 18px;
+        }
+    }
+
+    /* 景点类型样式 */
+    .category-section {
+        padding: 80px 0;
+        background: linear-gradient(180deg, #ffffff 0%, #f5f5f7 100%);
+    }
+    
+    .section-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+    
+    .section-header h3 {
+        font-size: 36px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 10px;
+    }
+    
+    .section-header p {
+        font-size: 18px;
+        color: #86868b;
+    }
+    
+    .categories-grid {
+        margin-bottom: 30px;
+    }
+    
+    /* 类别卡片样式 */
+    .category-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 24px 16px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 102, 204, 0.08);
+        transition: all 0.4s ease;
+        margin-bottom: 30px;
+        text-decoration: none;
+    }
+    
+    .category-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 40px rgba(0, 102, 204, 0.15);
+    }
+    
+    .category-icon {
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f0f5ff 0%, #e6f0ff 100%);
+        border-radius: 50%;
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+    
+    .category-icon img {
+        width: 60%;
+        height: 60%;
+        object-fit: contain;
+        transition: transform 0.4s ease;
+    }
+    
+    .category-card:hover .category-icon img {
+        transform: scale(1.1);
+    }
+    
+    .category-card h4 {
+        font-size: 16px;
+        font-weight: 500;
+        color: #1d1d1f;
+        margin: 0;
+        transition: color 0.3s ease;
+    }
+    
+    .category-card:hover h4 {
+        color: #0066CC;
+    }
+    
+    /* 响应式调整 */
+    @media (max-width: 992px) {
+        .category-section {
+            padding: 60px 0;
+        }
+        
+        .section-header h3 {
+            font-size: 30px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .section-header h3 {
+            font-size: 26px;
+        }
+        
+        .category-card {
+            padding: 20px 12px;
+        }
+        
+        .category-icon {
+            width: 70px;
+            height: 70px;
+        }
+        
+        .category-card h4 {
+            font-size: 14px;
+        }
+    }
+</style>

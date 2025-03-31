@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="utf-8"/>
+    <title>系统后台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
+    <meta content="Themesdesign" name="author"/>
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link href="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet"
+          type="text/css"/>
+    <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css"/>
+
+    <link rel="stylesheet" type="text/css"  th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/layui/jquery-3.6.0.js}"></script>
+    <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+</head>
+<body>
+<div id="layout-wrapper">
+
+    <div th:include="home/menu"></div>
+    <div class="main-content">
+        <div class="page-content">
+            <!-- start page title -->
+            <div class="page-title-box">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <div class="page-title">
+                                <h4>商家管理</h4>
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="javascript: void(0);">添加商家</a></li>
+
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+
+            <div class="container-fluid">
+                <div class="page-content-wrapper">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form class="custom-validation" th:action="@{/addBussiness}" method="post" >
+                                        <div class="mb-3">
+                                            <label>商家账号</label>
+                                            <span style="color: red"  th:text="${status}"></span>
+                                            <input type="text" name="name" class="form-control" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>名称</label>
+                                            <input type="text" name="realname" class="form-control" required />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>密码</label>
+                                            <div>
+                              <input type="password"  class="form-control" required />
+                                            </div>
+
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>邮箱</label>
+                                            <div>
+                                                <input type="email" class="form-control" required name="email"
+                                                       parsley-type="email" />
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label>密码</label>
+                                            <div>
+                                                <input  type="text" name="pwd"
+                                                       class="form-control" required
+                                                      />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>手机号</label>
+                                            <div>
+                                          <input  type="text" name="phone"  class="form-control" required />
+                                            </div>
+                                        </div>
+
+
+                                        <div class="mb-3">
+                                        <input type="hidden" name="photo" class="photo">
+                                        <div class="layui-form-item">
+                                            <label >图片:</label>
+                                            <div class="layui-upload">
+                                                <div class="layui-upload-list">
+                                                    <img class="layui-upload-img" style="width:200px;height:100px;" id="demo1">
+                                                    <button type="button" class="layui-btn layui-btn-xs layui-btn-primary" id="test1">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        <div class="mb-3">
+                                            <input type="hidden" name="banner" class="banner">
+                                            <div class="layui-form-item">
+                                                <label >店铺主页图片:</label>
+                                                <div class="layui-upload">
+                                                    <div class="layui-upload-list">
+                                                        <img class="layui-upload-img" style="width:200px;height:100px;" id="demo2">
+                                                        <button type="button" class="layui-btn layui-btn-xs layui-btn-primary" id="test2">+</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label>店铺介绍</label>
+                                            <textarea required="" name="detail"  class="form-control" rows="5"></textarea>
+                                        </div>
+                                        <div class="mb-0">
+                                            <div>
+                                                <button type="submit" class="btn btn-primary waves-effect waves-light me-1">
+                                                    提交
+                                                </button>
+                                                <button type="reset" class="btn btn-secondary waves-effect">
+                                                    重置
+                                                </button>
+                                                <a href="BussinessList" type="button" class="btn btn-dark waves-effect">
+                                                    返回
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div> <!-- end col -->
+
+
+                    </div> <!-- end row -->
+
+                </div>
+
+
+            </div> <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+
+
+    </div>
+    <!-- end main content-->
+
+</div>
+<!-- END layout-wrapper -->
+
+
+<!-- Right bar overlay-->
+<div class="rightbar-overlay"></div>
+
+
+
+
+<script>
+    layui.use([ 'form','jquery','layer','upload','layedit' ,'laydate'  ], function() {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery,
+            upload = layui.upload;
+        form.render();//这句一定要加，占坑
+
+
+
+        var uploadInst = upload.render({
+            elem: '#test1'
+            ,url: 'upload'
+            ,accept:'images'
+            ,size:50000
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+                    $('#demo1').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                layer.msg('上传成功');
+
+                var fileupload = $(".photo");
+                fileupload.attr("value",res.data.src);
+                console.log(fileupload.attr("value"));
+            }
+            ,error: function(){
+                layer.msg('上传失败');
+            }
+        });
+
+        var uploadInst = upload.render({
+            elem: '#test2'
+            ,url: 'upload'
+            ,accept:'images'
+            ,size:50000
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+                    $('#demo2').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                layer.msg('上传成功');
+
+                var fileupload = $(".banner");
+                fileupload.attr("value",res.data.src);
+                console.log(fileupload.attr("value"));
+            }
+            ,error: function(){
+                layer.msg('上传失败');
+            }
+        });
+
+
+    })
+
+</script>
+
+</body>
+</html>

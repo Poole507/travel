@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en"xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>旅游网站</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="static/picture/favicon.svg">
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="static/css/main.css">
+</head>
+
+<body>
+<!-- Quick view -->
+<div th:include="index/header"></div>
+
+<main class="main">
+    <!-- 页面标题部分 - 更紧凑的设计 -->
+    <div class="page-header">
+        <div class="container">
+            <div class="header-content">
+                <h1>旅游中心</h1>
+                <p>探索世界各地的精彩景点</p>
+            </div>
+            <div class="header-visual">
+                <div class="visual-element"></div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* 更紧凑的页面标题样式 */
+        .page-header {
+            background: linear-gradient(135deg, #0066CC 0%, #5AC8FA 100%);
+            padding: 40px 0 50px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 20px rgba(0, 102, 204, 0.12);
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header-content h1 {
+            color: white;
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .header-visual {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .visual-element {
+            position: absolute;
+            bottom: -80px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        .visual-element:before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: -100px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 30px 0 40px;
+            }
+            
+            .header-content h1 {
+                font-size: 28px;
+            }
+            
+            .header-content p {
+                font-size: 14px;
+            }
+        }
+    </style>
+
+    <div class="container mb-30">
+        <div class="row">
+            <div class="col-lg-4-5">
+                <div class="shop-product-fillter">
+                    <div class="totall-product">
+                        <p>共<strong class="text-brand"th:text="${pageInfo.total}"></strong> 项景点!</p>
+                    </div>
+                    <div class="sort-by-product-area">
+                        <div class="sort-by-cover mr-10">
+                            <div class="sort-by-product-wrap">
+                                <div class="sort-by">
+                                    <span><i class="fi-rs-apps"></i>每页:</span>
+                                </div>
+                                <div class="sort-by-dropdown-wrap">
+                                    <span th:text="${pageInfo.pageSize}">  <i class="fi-rs-angle-small-down"></i></span>
+                                </div>
+                            </div>
+                            <div class="sort-by-dropdown">
+                                <ul>
+                                    <li><a class="active" th:href="@{/toGoods(pageSize=${pageInfo.pageSize})}" th:text="${pageInfo.pageSize}"></a></li>
+                                    <li><a th:href="@{/toGoods(pageSize=5)}">5</a></li>
+                                    <li><a th:href="@{/toGoods(pageSize=10)}">10</a></li>
+                                    <li><a th:href="@{/toGoods(pageSize=20)}">20</a></li>
+                                    <li><a th:href="@{/toGoods(pageSize=30)}">30</a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="sort-by-cover">
+                            <div class="sort-by-product-wrap">
+                                <div class="sort-by">
+                                    <span><i class="fi-rs-apps-sort"></i>筛选:</span>
+                                </div>
+                                <div class="sort-by-dropdown-wrap" th:with="sortType=${param.pricehigh != null ? '价格从高到低' : (param.pricelow != null ? '价格从低到高' : (param.ishot != null ? '热门景点' : (param.collect != null ? '收藏最多' : '默认排序')))}">
+                                    <span th:text="${sortType}"><i class="fi-rs-angle-small-down"></i></span>
+                                </div>
+                            </div>
+                            <div class="sort-by-dropdown">
+                                <ul>
+                                    <li><a th:class="${param.pricehigh == null && param.pricelow == null && param.ishot == null && param.collect == null ? 'active' : ''}" href="toGoods">默认</a></li>
+                                    <li><a th:class="${param.pricehigh != null ? 'active' : ''}" th:href="@{/toGoods(pricehigh=1)}">价格从高到低</a></li>
+                                    <li><a th:class="${param.pricelow != null ? 'active' : ''}" th:href="@{/toGoods(pricelow=1)}">价格从低到高</a></li>
+                                    <li><a th:class="${param.ishot != null ? 'active' : ''}" th:href="@{/toGoods(ishot=1)}">热门景点</a></li>
+                                    <li><a th:class="${param.collect != null ? 'active' : ''}" th:href="@{/toGoods(collect=1)}">收藏最多</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row product-grid">
+                    <div class="col-lg-1-5 col-md-4 col-12 col-sm-6" th:each="data:${pageInfo.list}">
+                        <div class="product-cart-wrap mb-30">
+                            <div class="product-img-action-wrap">
+                                <div class="product-img product-img-zoom">
+                                    <a th:href="@{/toGoodsDetail(id=${data.id})}">
+                                        <img style="width: 246px;height: 246px" class="default-img" th:src="${data.photo}" alt="">
+                                        <!-- 背后图<img class="hover-img" src="static/picture/product-1-2.jpg" alt="">-->
+                                    </a>
+                                </div>
+
+                                <div class="product-badges product-badges-position product-badges-mrg">
+                                    <span class="sale" th:if="${data.ishot} eq 1">热门</span>
+                                </div>
+                            </div>
+                            <div class="product-content-wrap">
+                                <div class="product-category">
+                                    <a  th:text="${data.category.name}"></a>
+                                </div>
+                                <h2><a th:href="@{/toGoodsDetail(id=${data.id})}" th:text="${data.names}"></a></h2>
+                                <div>
+
+                                    <span class="font-smalltext-muted"th:text="${data.seenums}+'次浏览'"> </span>
+                                </div>
+                                <div>
+                                    <span class="font-small text-muted" th:text="${data.collectnums}+'人收藏'"></span>
+                                </div>
+                                <div class="product-card-bottom">
+                                    <div class="product-price">
+                                        <span th:text="'￥'+${data.price}"></span>
+                                        <span th:text="'￥'+${data.normalprice}" class="old-price"></span>
+                                    </div>
+                                    <div class="add-cart">
+                                        <a class="add" th:onclick="addcart([[${data.id}]])" ><i class="fi-rs-shopping-cart mr-5"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--product grid-->
+                <div class="pagination-area mt-20 mb-20">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item">
+                                <a class="page-link" th:href="'/'+${url}+'?pageNum='+${pageInfo.prePage}"
+                                   th:if="${pageInfo.pageNum > pageInfo.getFirstPage() && pageInfo.prePage != 0}"><i class="fi-rs-arrow-small-left"></i></a>
+                            </li>
+
+
+                            <li class="page-item" th:each="i:${pageInfo.navigatepageNums}">
+
+                                <a style="color: white" class="page-link bg-primary" th:href="'/'+${url}+'?pageNum='+${i}" th:if="${pageInfo.pageNum == i}"
+                                   th:text="${i}"
+                                ></a>
+
+                                <a class="page-link" th:href="'/'+${url}+'?pageNum='+${i}"
+                                   th:if="${pageInfo.pageNum != i}" th:text="${i}">
+                                </a>
+                            </li>
+
+                            <li class="page-item"><a class="page-link" th:href="'/'+${url}+'?pageNum='+${pageInfo.nextPage}"
+                                                     th:if="${pageInfo.pageNum < pageInfo.getLastPage()}"><i class="fi-rs-arrow-small-right"></i></a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+            <div class="col-lg-1-5 primary-sidebar sticky-sidebar">
+                <div class="sidebar-module">
+                    <h3 class="sidebar-title">景点类型</h3>
+                    <div class="category-list">
+                        <div class="category-item" th:each="data:${categorylist}">
+                            <a class="category-link" th:href="@{/toGoods(category_id=${data.id})}">
+                                <div class="category-icon">
+                                    <img th:src="${data.photo}" alt="">
+                                </div>
+                                <div class="category-info">
+                                    <span class="category-name" th:text="${data.name}"></span>
+                                    <span class="category-count" th:text="${data.nums}+'个景点'"></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:include="index/footer"></div>
+<!-- Preloader Start -->
+<div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="text-center">
+                <img src="static/picture/loading.gif" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Vendor JS-->
+<script src="static/js/modernizr-3.6.0.min.js"></script>
+<script src="static/js/jquery-3.6.0.min.js"></script>
+<script src="static/js/jquery-migrate-3.3.0.min.js"></script>
+<script src="static/js/bootstrap.bundle.min.js"></script>
+<script src="static/js/slick.js"></script>
+<script src="static/js/jquery.syotimer.min.js"></script>
+<script src="static/js/wow.js"></script>
+<script src="static/js/jquery-ui.js"></script>
+<script src="static/js/perfect-scrollbar.js"></script>
+<script src="static/js/magnific-popup.js"></script>
+<script src="static/js/select2.min.js"></script>
+<script src="static/js/waypoints.js"></script>
+<script src="static/js/counterup.js"></script>
+<script src="static/js/jquery.countdown.min.js"></script>
+<script src="static/js/images-loaded.js"></script>
+<script src="static/js/isotope.js"></script>
+<script src="static/js/scrollup.js"></script>
+<script src="static/js/jquery.vticker-min.js"></script>
+<script src="static/js/jquery.theia.sticky.js"></script>
+<script src="static/js/jquery.elevatezoom.js"></script>
+<!-- Template  JS -->
+<script src="static/js/main.js"></script>
+<script src="static/js/shop.js"></script>
+
+
+<link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+<script th:src="@{/assets/libs/sweetalert2/sweetalert2.min.js}" src=""></script>
+<script th:src="@{/assets/js/pages/sweet-alerts.init.js}" src=""></script>
+<script>
+
+    function addcart(id) {
+        Swal.fire({
+            title: "确定加入收藏吗?",
+            icon: "info",
+            showCancelButton: !0,
+            confirmButtonColor: "#1cbb8c",
+            cancelButtonColor: "#f14e4e",
+            confirmButtonText: '确认',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    cache: true,
+                    url: "addShopcart",
+                    data: {"goods_id": id,"nums":1},
+                    type: "post",
+                    async: false,
+                    success: function (data) {
+                        if (data == 'yes') {
+                            result.value && Swal.fire("加入成功!", "操作完成", "success", ).then(function () {
+                                document.location.reload()
+                            })
+                        } else  if (data == 'no') {
+                            result.value && Swal.fire("加入失败!", "请先登录", "error", ).then(function () {
+                                document.location.reload()
+                            })
+
+                        }
+                    },
+                    complete : function(xhr, status) {
+                        if(status=='error'){
+                            alert("请先登录！")
+                        }
+                        //拦截器实现超时跳转到登录页面
+                        // 通过xhr取得响应头
+                        var REDIRECT = xhr.getResponseHeader("REDIRECT");
+                        //如果响应头中包含 REDIRECT 则说明是拦截器返回的需要重定向的请求
+                        if (REDIRECT == "REDIRECT")
+                        {
+                            var win = window;
+                            while (win != win.top)
+                            {
+                                win = win.top;
+                            }
+
+                            win.location.href = xhr.getResponseHeader("CONTEXTPATH");
+                        }
+                    }
+                });
+            }
+        })
+    }
+</script>
+
+<style>
+    /* Apple 风格侧边栏样式 */
+    .sidebar-module {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 8px 30px rgba(0, 102, 204, 0.08);
+        margin-bottom: 30px;
+    }
+    
+    .sidebar-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #f5f5f7;
+    }
+    
+    .category-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .category-item {
+        transition: all 0.3s ease;
+    }
+    
+    .category-item:hover {
+        transform: translateX(5px);
+    }
+    
+    .category-link {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #1d1d1f;
+        padding: 10px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+    
+    .category-link:hover {
+        background: #f5f5f7;
+    }
+    
+    .category-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: #f0f5ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        overflow: hidden;
+    }
+    
+    .category-icon img {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+    }
+    
+    .category-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    
+    .category-name {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+    
+    .category-count {
+        font-size: 13px;
+        color: #86868b;
+    }
+</style>
+</body>
+
+</html>

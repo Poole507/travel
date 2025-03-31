@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>系统后台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
+    <meta content="Themesdesign" name="author"/>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+
+    <!-- Bootstrap Css -->
+    <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css"/>
+    <!-- Icons Css -->
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <!-- App Css-->
+    <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css"/>
+
+
+
+</head>
+<body>
+
+
+    <div th:include="home/menu"></div>
+
+    <div id="layout-wrapper">
+
+
+        <div class="main-content">
+
+            <div class="page-content">
+
+                <!-- start page title -->
+                <div class="page-title-box">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <div class="col-sm-6">
+                                <div class="page-title">
+                                    <h4>系统后台</h4>
+                                    <ol class="breadcrumb m-0">
+
+                                        <li class="breadcrumb-item active">酒店预订月份统计</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="float-end d-none d-sm-block">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end page title -->
+
+
+                <div class="container-fluid">
+                    <div class="page-content-wrapper">
+                        <div class="row">
+                            <div class="col-xl-9 mx-auto" style="width: 100%">
+                                <div class="card" style="width: 1800px">
+
+
+                                    <div id="main1" class="chart-container" style="width:1000px; height:800px; "></div>
+
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div> <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+
+
+    </div>
+
+    </div>
+
+    <!--列表页面的-->
+    <!-- Required datatable js -->
+    <script type="text/javascript" src="https://assets.pyecharts.org/assets/v5/echarts.min.js"></script>
+    <script>
+        $.ajax({
+            type: "post",
+            async: true,            //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            url: "Normal_Echarts2",    //请求发送到dataActiont处
+            data: {},
+            dataType: "json",
+            success: function (data) {
+                if (data) {
+                    var message = [];
+                    var counts = [];
+                    for(var i= 0;i<data.length;i++){
+                        message.push(data[i].names);
+                        counts.push(data[i].counts);
+                    }
+
+                    /*~~~~~~~~~~~~~~~~数据统计图开始~~~~~~~~~~~~~~~~~~~~~~~~*/
+                    var chart_main1 = echarts.init(
+                        document.getElementById('main1'), 'white', {renderer: 'canvas'});
+                    var option_main1 = {
+                        "animation": true,
+                        "animationThreshold": 2000,
+                        "animationDuration": 1000,
+                        "animationEasing": "cubicOut",
+                        "animationDelay": 0,
+                        "animationDurationUpdate": 300,
+                        "animationEasingUpdate": "cubicOut",
+                        "animationDelayUpdate": 0,
+                        "aria": {
+                            "enabled": false
+                        },
+                        "color": [
+                            "#5470c6",
+                            "#91cc75",
+                            "#fac858",
+                            "#ee6666",
+                            "#73c0de",
+                            "#3ba272",
+                            "#fc8452",
+                            "#9a60b4",
+                            "#ea7ccc"
+                        ],
+                        "series": [
+                            {
+                                "type": "bar",
+                                "legendHoverLink": true,
+                                /*~~~~~~~~~~~~~~~~~~~~Y轴的数据~~~~~~~~~~~~~~~~~~~~*/
+                                "data": counts,
+                                "realtimeSort": false,
+                                "showBackground": false,
+                                "stackStrategy": "samesign",
+                                "cursor": "pointer",
+                                "barMinHeight": 0,
+                                "barCategoryGap": "20%",
+                                "barGap": "30%",
+                                "large": false,
+                                "largeThreshold": 400,
+                                "seriesLayoutBy": "column",
+                                "datasetIndex": 0,
+                                "clip": true,
+                                "zlevel": 0,
+                                "z": 2,
+                                "label": {
+                                    "show": false,
+                                    "margin": 8
+                                },
+                                "markLine": {
+                                    "silent": false,
+                                    "precision": 2,
+                                    "label": {
+                                        "show": true,
+                                        "margin": 8
+                                    },
+                                    "data": [
+                                        {
+                                            "name": "最低值",
+                                            "type": "min"
+                                        },
+                                        {
+                                            "name": "最高值",
+                                            "type": "max"
+                                        },
+                                        {
+                                            "name": "平均值",
+                                            "type": "average"
+                                        }
+                                    ]
+                                },
+                                "rippleEffect": {
+                                    "show": true,
+                                    "brushType": "stroke",
+                                    "scale": 2.5,
+                                    "period": 4
+                                }
+                            }
+                        ],
+                        "legend": [
+                            {
+
+                                "selected": {},
+                                "show": true,
+                                "padding": 5,
+                                "itemGap": 10,
+                                "itemWidth": 25,
+                                "itemHeight": 14,
+                                "backgroundColor": "transparent",
+                                "borderColor": "#ccc",
+                                "borderWidth": 1,
+                                "borderRadius": 0,
+                                "pageButtonItemGap": 5,
+                                "pageButtonPosition": "end",
+                                "pageFormatter": "{current}/{total}",
+                                "pageIconColor": "#2f4554",
+                                "pageIconInactiveColor": "#aaa",
+                                "pageIconSize": 15,
+                                "animationDurationUpdate": 800,
+                                "selector": false,
+                                "selectorPosition": "auto",
+                                "selectorItemGap": 7,
+                                "selectorButtonGap": 10
+                            }
+                        ],
+                        "tooltip": {
+                            "show": true,
+                            "trigger": "item",
+                            "triggerOn": "mousemove|click",
+                            "axisPointer": {
+                                "type": "line"
+                            },
+                            "showContent": true,
+                            "alwaysShowContent": false,
+                            "showDelay": 0,
+                            "hideDelay": 100,
+                            "enterable": false,
+                            "confine": false,
+                            "appendToBody": false,
+                            "transitionDuration": 0.4,
+                            "textStyle": {
+                                "fontSize": 14
+                            },
+                            "borderWidth": 0,
+                            "padding": 5,
+                            "order": "seriesAsc"
+                        },
+                        "xAxis": [
+                            {
+                                "show": true,
+                                "scale": false,
+                                "nameLocation": "end",
+                                "nameGap": 15,
+                                "gridIndex": 0,
+                                "axisLabel": {
+                                    "show": true,
+                                    "rotate": 45,
+                                    "margin": 8
+                                },
+                                "inverse": false,
+                                "offset": 0,
+                                "splitNumber": 5,
+                                "minInterval": 0,
+                                "splitLine": {
+                                    "show": true,
+                                    "lineStyle": {
+                                        "show": true,
+                                        "width": 1,
+                                        "opacity": 1,
+                                        "curveness": 0,
+                                        "type": "solid"
+                                    }
+                                },
+                                /*~~~~~~~~~~~~~~~~~~~~~~X轴名称~~~~~~~~~~~~~~~~~~~~~~~~~*/
+                                "data": message
+                            }
+                        ],
+                        "yAxis": [
+                            {
+                                "show": true,
+                                "scale": false,
+                                "nameLocation": "end",
+                                "nameGap": 15,
+                                "gridIndex": 0,
+                                "inverse": false,
+                                "offset": 0,
+                                "splitNumber": 5,
+                                "minInterval": 0,
+                                "splitLine": {
+                                    "show": true,
+                                    "lineStyle": {
+                                        "show": true,
+                                        "width": 1,
+                                        "opacity": 1,
+                                        "curveness": 0,
+                                        "type": "solid"
+                                    }
+                                }
+                            }
+                        ],
+                        "title": [
+                            {
+                                "show": true,
+                                "text": "酒店月份预订统计",
+                                "target": "blank",
+                                "subtarget": "blank",
+                                "padding": 5,
+                                "itemGap": 10,
+                                "textAlign": "auto",
+                                "textVerticalAlign": "auto",
+                                "triggerEvent": false
+                            }
+                        ],
+                        "visualMap": {
+                            "show": true,
+                            "type": "continuous",
+                            "min": 0,
+                            "max": 30,
+                            "inRange": {
+                                "color": [
+                                    "#2aff4a",
+                                    "#ff9047",
+                                    "#188df0"
+                                ]
+                            },
+                            "calculable": true,
+                            "inverse": true,
+                            "splitNumber": 5,
+                            "dimension": 1,
+                            "hoverLink": true,
+                            "orient": "vertical",
+                            "right": "5%",
+                            "padding": 5,
+                            "showLabel": true,
+                            "itemWidth": 20,
+                            "itemHeight": 140,
+                            "borderWidth": 0
+                        }
+                    };
+                    chart_main1.setOption(option_main1);
+                    /*~~~~~~~~~~~~~~~~数据统计图结束~~~~~~~~~~~~~~~~~~~~~~~~*/
+                } else {
+                    alert("数据无！");
+                }
+            }
+        })
+    </script>
+
+
+</body>
+</html>

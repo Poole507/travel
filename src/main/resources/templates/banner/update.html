@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>编辑轮播图 | 旅游网站后台</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="旅游网站后台管理系统" name="description"/>
+    <meta content="Travel Admin" name="author"/>
+    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link href="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/layui/css/layui.css}">
+    
+    <style>
+        :root {
+            --primary-color: #0066CC;
+            --primary-light: #e6f0ff;
+            --primary-dark: #0055aa;
+            --secondary-color: #5AC8FA;
+            --text-color: #1d1d1f;
+            --text-light: #86868b;
+            --bg-color: #f5f5f7;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        /* 卡片样式 */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-body {
+            padding: 30px;
+        }
+        
+        /* 标题样式 */
+        .page-title h4 {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+        
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        /* 表单样式 */
+        .form-control {
+            height: 50px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: 1px solid #e2e2e2;
+            border-radius: 10px;
+            background-color: #f9f9fb;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+        }
+        
+        label {
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        
+        .mb-3 {
+            margin-bottom: 25px !important;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            padding: 12px 24px;
+            font-weight: 500;
+            border-radius: 30px;
+            transition: var(--transition);
+            font-size: 15px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: #e2e2e2;
+            border-color: #e2e2e2;
+            color: var(--text-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d1d1d6;
+            border-color: #d1d1d6;
+            color: var(--text-color);
+        }
+        
+        .btn-dark {
+            background-color: #1d1d1f;
+            border-color: #1d1d1f;
+        }
+        
+        .btn-dark:hover {
+            background-color: #2d2d2f;
+            border-color: #2d2d2f;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 上传图片区域 */
+        .layui-upload-list {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .layui-upload-img {
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            object-fit: cover;
+        }
+        
+        .layui-upload-img:hover {
+            transform: scale(1.02);
+        }
+        
+        .layui-btn {
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            padding: 0;
+            margin-left: 15px;
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.2);
+        }
+        
+        .layui-btn:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 6px 15px rgba(0, 102, 204, 0.3);
+        }
+        
+        /* 提示消息样式 */
+        .layui-layer {
+            border-radius: 16px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .layui-layer-title {
+            background-color: #fff !important;
+            border-bottom: 1px solid #f0f0f0 !important;
+            font-weight: 600 !important;
+            color: var(--text-color) !important;
+        }
+        
+        .layui-layer-content {
+            color: var(--text-light) !important;
+            padding: 20px !important;
+        }
+        
+        /* 间距调整 */
+        .gap-2 {
+            gap: 0.75rem !important;
+        }
+        
+        .d-flex {
+            display: flex !important;
+        }
+    </style>
+</head>
+
+<body>
+<div id="layout-wrapper">
+    <div th:include="home/menu"></div>
+    
+    <div class="main-content">
+        <div class="page-content">
+            <!-- start page title -->
+            <div class="page-title-box">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <div class="page-title">
+                                <h4>编辑轮播图</h4>
+                                <ol class="breadcrumb m-0">
+                                    <li class="breadcrumb-item"><a href="BannerList">轮播图管理</a></li>
+                                    <li class="breadcrumb-item active">编辑轮播图</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end page title -->
+
+            <div class="container-fluid">
+                <div class="page-content-wrapper">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <form class="custom-validation" th:action="@{/updateBanner}" method="post">
+                                        <input type="hidden" name="id" th:value="${data.id}" class="layui-input" />
+                                        
+                                        <div class="mb-3">
+                                            <label>轮播图标题</label>
+                                            <input type="text" th:value="${data.title}" name="title" class="form-control" required placeholder="请输入轮播图标题"/>
+                                        </div>
+                                        
+                                        <div class="mb-4">
+                                            <input type="hidden" name="photo" class="photo" th:value="${data.photo}">
+                                            <div class="form-group">
+                                                <label>轮播图片</label>
+                                                <div class="layui-upload">
+                                                    <div class="layui-upload-list">
+                                                        <img class="layui-upload-img" th:src="${data.photo}" style="width:300px;height:150px;" id="demo1">
+                                                        <button type="button" class="layui-btn layui-btn-primary" id="test1">
+                                                            <i class="mdi mdi-pencil"></i>
+                                                        </button>
+                                                    </div>
+                                                    <div class="mt-2 text-muted">
+                                                        建议尺寸: 1920×600px，支持jpg、png格式
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0">
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-primary waves-effect waves-light">
+                                                    <i class="mdi mdi-check-circle me-1"></i> 保存修改
+                                                </button>
+                                                <button type="reset" class="btn btn-secondary waves-effect">
+                                                    <i class="mdi mdi-refresh me-1"></i> 重置
+                                                </button>
+                                                <a href="BannerList" class="btn btn-dark waves-effect">
+                                                    <i class="mdi mdi-arrow-left me-1"></i> 返回
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div> <!-- end col -->
+                    </div> <!-- end row -->
+                </div>
+            </div> <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+    </div>
+</div>
+
+<!-- 脚本 -->
+<script th:src="@{/layui/jquery-3.6.0.js}"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/bootstrap/js/bootstrap.bundle.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/metismenu/metisMenu.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/simplebar/simplebar.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/libs/node-waves/waves.min.js}" charset="utf-8"></script>
+<script th:src="@{/assets/js/app.js}" charset="utf-8"></script>
+
+<script>
+    layui.use(['form', 'jquery', 'layer', 'upload', 'layedit'], function() {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery,
+            layedit = layui.layedit,
+            upload = layui.upload;
+        
+        form.render(); // 渲染表单
+        
+        // 图片上传
+        var uploadInst = upload.render({
+            elem: '#test1',
+            url: 'upload',
+            accept: 'images',
+            size: 50000,
+            before: function(obj) {
+                // 预览
+                obj.preview(function(index, file, result) {
+                    $('#demo1').attr('src', result);
+                });
+                
+                // 显示加载中
+                layer.load(1, {
+                    shade: [0.1, '#fff']
+                });
+            },
+            done: function(res) {
+                layer.closeAll('loading'); // 关闭加载层
+                
+                // 上传成功
+                if (res.code > 0) {
+                    return layer.msg('上传失败', {icon: 2});
+                }
+                
+                layer.msg('上传成功', {icon: 1});
+                
+                // 设置隐藏字段的值
+                var fileupload = $(".photo");
+                fileupload.attr("value", res.data.src);
+            },
+            error: function() {
+                layer.closeAll('loading'); // 关闭加载层
+                layer.msg('上传失败，请检查网络连接', {icon: 2});
+            }
+        });
+    });
+</script>
+</body>
+</html>

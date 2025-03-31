@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>注册</title>
+    <link rel="stylesheet" href="register/static/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #f5f5f7;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .myCard {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .col-md-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+
+        .myLeftCtn {
+            padding: 4rem;
+            background: white;
+        }
+
+        .myRightCtn {
+            background: linear-gradient(135deg, #0066CC, #0095FF);
+            padding: 4rem;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .myRightCtn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            backdrop-filter: blur(10px);
+        }
+
+        .myForm {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        header {
+            font-size: 32px;
+            line-height: 1.1;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+
+        .myInput {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 16px;
+            line-height: 1.4;
+            border: 1px solid #e1e1e1;
+            border-radius: 12px;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .myInput:focus {
+            outline: none;
+            border-color: #0066CC;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .fas {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #86868b;
+        }
+
+        .invalid-feedback {
+            color: #ff3b30;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .box {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .box header {
+            color: white;
+            font-size: 38px;
+            margin-bottom: 1.5rem;
+        }
+
+        .butt {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 500;
+            background-color: #0066CC;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1.5rem;
+        }
+
+        .butt:hover {
+            background-color: #0052CC;
+            transform: translateY(-1px);
+        }
+
+        .butt_out {
+            padding: 12px 28px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .butt_out:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .avatar-upload {
+            margin-top: 1.5rem;
+        }
+
+        .avatar-upload label {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: #1d1d1f;
+        }
+
+        .layui-upload-list {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        #demo1 {
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        #test1 {
+            width: 48px;
+            height: 48px;
+            border: 2px dashed #0066CC;
+            border-radius: 12px;
+            background: white;
+            font-size: 24px;
+            color: #0066CC;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #test1:hover {
+            background: #f0f7ff;
+            border-color: #0052CC;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 1.5rem;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            accent-color: #0066CC;
+        }
+
+        .checkbox-wrapper small {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .welcome-text {
+            font-size: 17px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .myRightCtn {
+                display: none;
+            }
+
+            .myLeftCtn {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="myCard">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="myLeftCtn">
+                        <form th:action="@{/registerUser}" method="post" class="myForm" onsubmit="return validateForm(this)" novalidate="">
+                            <header>创建新账号</header>
+                            
+                            <div class="form-group">
+                                <input class="myInput" type="text" placeholder="请输入账号" name="name" id="name" required="">
+                                <i class="fas fa-user"></i>
+                                <div class="invalid-feedback">请输入账号</div>
+                            </div>
+
+                            <div class="form-group">
+                                <span style="color: #ff3b30" th:text="${status}"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input class="myInput" placeholder="请输入手机号" type="text" name="phone" id="phone" required="">
+                                <i class="fas fa-phone"></i>
+                                <div class="invalid-feedback">请输入手机号</div>
+                            </div>
+
+                            <div class="form-group">
+                                <input class="myInput" placeholder="请输入姓名" type="text" name="realname" id="realname" required="">
+                                <i class="fas fa-user-friends"></i>
+                                <div class="invalid-feedback">请输入姓名</div>
+                            </div>
+
+                            <div class="form-group">
+                                <input class="myInput" type="password" name="pwd" id="pwd" placeholder="请输入密码" required="">
+                                <i class="fas fa-lock"></i>
+                                <div class="invalid-feedback">请输入密码</div>
+                            </div>
+
+                            <div class="form-group avatar-upload">
+                                <input type="hidden" name="photo" class="photo">
+                                <label>头像上传</label>
+                                <div class="layui-upload">
+                                    <div class="layui-upload-list">
+                                        <img class="layui-upload-img" style="width:100px;height:100px;" id="demo1">
+                                        <button type="button" id="test1">+</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="checkbox-wrapper">
+                                <input id="check_1" name="check_1" type="checkbox" required="">
+                                <small>我已阅读并同意用户协议</small>
+                            </div>
+
+                            <input type="submit" id="save" class="butt" value="立即注册">
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="myRightCtn">
+                        <div class="box">
+                            <header>探索世界</header>
+                            <p class="welcome-text">
+                                开启您的旅行之旅，发现更多精彩。<br>
+                                让我们一起创造难忘的旅行回忆。
+                            </p>
+                            <a href="outLogin">
+                                <button class="butt_out">返回登录</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 保持原有的脚本 -->
+    <script src="register/static/script.js"></script>
+    <script th:src="@{/layui/jquery-3.6.0.js}"></script>
+    <script th:src="@{/layui/layui.js}"></script>
+    <script>
+        layui.use([ 'form','jquery','layer','upload','layedit' ,'laydate'  ], function() {
+            var form = layui.form,
+                layer = layui.layer,
+                $ = layui.jquery,
+                layedit = layui.layedit,
+                laydate = layui.laydate,
+                upload = layui.upload;
+            form.render();//这句一定要加，占坑
+
+            laydate.render({
+                elem: '#startDate'
+            });
+
+            laydate.render({
+                elem: '#starttime',type: 'time'
+            });
+
+            laydate.render({
+                elem: '#endtime',type: 'time'
+            });
+
+            layedit.set({
+                uploadImage: {
+                    url: 'uploadconimage', //接口url
+                    type: 'post' //默认post
+                }
+            });
+
+            let index2 = layedit.build('content2',{
+                tool: ['strong','italic','underline','del' ,'|','left','center','right','link','unlink','image','face'],
+                height: 150, //设置编辑器高度
+            });
+
+            var uploadInst = upload.render({
+                elem: '#test1'
+                ,url: 'upload'
+                ,accept:'images'
+                ,size:50000
+                ,before: function(obj){
+                    obj.preview(function(index, file, result){
+                        $('#demo1').attr('src', result);
+                    });
+                }
+                ,done: function(res){
+                    //如果上传失败
+                    if(res.code > 0){
+                        return layer.msg('上传失败');
+                    }
+                    layer.msg('上传成功');
+
+                    var fileupload = $(".photo");
+                    fileupload.attr("value",res.data.src);
+                    console.log(fileupload.attr("value"));
+                }
+                ,error: function(){
+                    layer.msg('上传失败');
+                }
+            });
+
+            var uploadInst = upload.render({
+                elem: '#test2'
+                ,url: 'upload'
+                ,accept:'file'
+                //,size:50000
+                ,before: function(obj){
+                    obj.preview(function(index, file, result){
+                        $('#demo2').text(file.name);
+                    });
+                }
+                ,done: function(res){
+                    //如果上传失败
+                    if(res.code > 0){
+                        return layer.msg('上传失败');
+                    }
+                    layer.msg('上传成功');
+
+                    var fileupload = $(".videos");
+                    fileupload.attr("value",res.data.src);
+                    console.log(fileupload.attr("value"));
+                }
+                ,error: function(){
+                    layer.msg('上传失败');
+                }
+            });
+
+
+        })
+
+    </script>
+</body>
+</html>

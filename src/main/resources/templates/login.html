@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>登录</title>
+
+    <link href="assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="assets/libs/spectrum-colorpicker2/spectrum.min.css" rel="stylesheet" type="text/css">
+    <link href="assets/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet"/>
+
+    <!-- Bootstrap Css -->
+    <link href="assets/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css"/>
+    <!-- Icons Css -->
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <!-- App Css-->
+    <link href="assets/css/app.min.css" id="app-style" rel="stylesheet" type="text/css"/>
+
+
+    <link rel="stylesheet" th:href="@{/login/css/tailwind.min.css}"/>
+    <link rel="stylesheet" th:href="@{/login/css/style.css}"/>
+    <link href="assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet"
+          type="text/css"/>
+    <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+
+    <link rel="stylesheet" type="text/css"  th:href="@{/layui/css/layui.css}">
+    <script type="text/javascript" th:src="@{/layui/jquery-3.6.0.js}"></script>
+    <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+    <script th:src="@{/assets/libs/jquery/jquery.min.js}" charset="utf-8"></script>
+    <script th:src="@{/assets/libs/bootstrap/js/bootstrap.bundle.min.js}" charset="utf-8"></script>
+    <script th:src="@{/assets/libs/metismenu/metisMenu.min.js}" charset="utf-8"></script>
+    <script th:src="@{/assets/libs/simplebar/simplebar.min.js}" charset="utf-8"></script>
+    <script th:src="@{/assets/libs/node-waves/waves.min.js}" charset="utf-8"></script>
+    <script th:src="@{/assets/js/app.js}" charset="utf-8"></script>
+
+    <script src="assets/libs/parsleyjs/parsley.min.js"></script>
+
+    <script src="assets/js/pages/form-validation.init.js"></script>
+</head>
+
+<body>
+<div class="relative min-h-screen flex">
+    <div class="flex flex-col sm:flex-row items-center md:items-start sm:justify-center md:justify-start flex-auto min-w-0 bg-white">
+        <div class=" sm:w-1/2 xl:w-3/5 h-full hidden md:flex flex-auto items-center justify-center p-10 overflow-hidden bg-purple-900 text-white bg-no-repeat bg-cover relative "
+             style="background-image: url(login/img/img.jpg)">
+            <div class=" absolute bg-gradient-to-b from-indigo-600 to-blue-500 opacity-75 inset-0 z-0"></div>
+            <div class="w-full max-w-md z-10">
+                <div class="sm:text-4xl xl:text-5xl font-bold leading-tight mb-6">欢迎光临
+                </div>
+                <div class="sm:text-sm xl:text-md text-gray-200 font-normal">
+                    欢迎来到旅游网站...
+
+
+                </div>
+
+            </div>
+            <ul class="circles">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+                <li></li>
+            </ul>
+        </div>
+        <div
+                class="md:flex md:items-center md:justify-center w-full sm:w-auto md:h-full w-2/5 xl:w-2/5 p-8 md:p-10 lg:p-14 sm:rounded-lg md:rounded-none bg-white">
+            <div class="max-w-md w-full mx-auto space-y-8">
+                <div class="text-center">
+                    <h2 class="mt-6 text-3xl font-bold text-gray-900">欢迎回来</h2>
+                </div>
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="h-px w-16 bg-gray-200"></span>
+                    <span class="text-gray-300 font-normal">使用账号登录</span>
+                    <span class="h-px w-16 bg-gray-200"></span>
+                </div>
+                <form class="mt-8 space-y-6" th:action="@{/loginUser}" method="post">
+                    <input type="hidden" name="remember" value="true"/>
+                    <div class="relative">
+                        <label class="ml-3 text-sm font-bold text-gray-700 tracking-wide">账号</label>
+                        <input class="w-full text-base px-4  py-2  border-b border-gray-300  focus:outline-none  rounded-2xl  focus:border-indigo-500"
+                               type="text"  id="username" name="username"
+                               placeholder="请输入账号"/>
+                    </div>
+                    <div class="mt-8 content-center">
+                        <label class="ml-3 text-sm font-bold text-gray-700 tracking-wide">密码</label>
+                        <input class="w-full  content-center  text-base  px-4  py-2  border-b  rounded-2xl  border-gray-300  focus:outline-none focus:border-indigo-500"
+                               type="text"  id="password" name="password"
+                               placeholder="请输入密码"/>
+                    </div>
+                    <div class="mt-8 content-center">
+                        <span style="color: red"  th:text="${status}"></span>
+
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <br><br><br>
+                        <select class="form-select" id="validationCustom03" required="" name="type">
+                            <option value="1" selected>管理员</option>
+                            <option value="2">用户</option>
+                        </select>
+
+
+                    </div>
+
+                    <div>
+                        <button type="submit"
+                                class=" w-full  flex  justify-center  bg-gradient-to-r  from-indigo-500  to-blue-600  hover:bg-gradient-to-l  hover:from-blue-500  hover:to-indigo-600  text-gray-100  p-4  rounded-full  tracking-wide  font-semibold  shadow-lg  cursor-pointer  transition  ease-in  duration-500 ">
+                            登 录
+                        </button>
+                    </div>
+                    <p class="items-center justify-center mt-10 text-center text-md text-gray-500 ">
+                        <span>还没有账号？</span>
+                        <a  href="register"  target="_blank"  class="text-indigo-400  hover:text-blue-500  no-underline  hover:underline  cursor-pointer  transition  ease-in duration-300 ">用户注册</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">商家注册</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script>
+    function registerBussiness() {
+        //   此处的id对应上面模态框body的id
+        $("#modal-body").load();   //   也可以使用name属性，这里的id是我自己加的，便于使用
+    }
+</script>
+
+<script>
+    layui.use([ 'form','jquery','layer','upload','layedit' ,'laydate'  ], function() {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.jquery,
+            upload = layui.upload;
+        form.render();//这句一定要加，占坑
+
+
+
+        var uploadInst = upload.render({
+            elem: '#test1'
+            ,url: 'upload'
+            ,accept:'images'
+            ,size:50000
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+                    $('#demo1').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                layer.msg('上传成功');
+
+                var fileupload = $(".photo");
+                fileupload.attr("value",res.data.src);
+                console.log(fileupload.attr("value"));
+            }
+            ,error: function(){
+                layer.msg('上传失败');
+            }
+        });
+
+        var uploadInst = upload.render({
+            elem: '#test2'
+            ,url: 'upload'
+            ,accept:'images'
+            ,size:50000
+            ,before: function(obj){
+                obj.preview(function(index, file, result){
+                    $('#demo2').attr('src', result);
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                layer.msg('上传成功');
+
+                var fileupload = $(".banner");
+                fileupload.attr("value",res.data.src);
+                console.log(fileupload.attr("value"));
+            }
+            ,error: function(){
+                layer.msg('上传失败');
+            }
+        });
+
+
+    })
+
+</script>
+</html>

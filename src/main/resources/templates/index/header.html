@@ -1,0 +1,358 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<header class="header-area header-style-1 header-height-2">
+    <style>
+        /* 整体样式重置 */
+        .header-area {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.1);
+            height: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 搜索框样式 */
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .search-form {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-form input {
+            width: 100%;
+            padding: 8px 40px 8px 16px;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f5f5f7;
+            transition: all 0.3s ease;
+        }
+
+        .search-form input:focus {
+            background: #fff;
+            border-color: #0066CC;
+            box-shadow: 0 0 0 4px rgba(0,102,204,0.1);
+            width: 100%;
+        }
+
+        .search-form button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .search-form button:hover {
+            color: #0066CC;
+        }
+
+        /* 用户信息样式 */
+        .header-action-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: transparent;
+        }
+
+        .user-info:hover {
+            background: #f5f5f7;
+            transform: translateY(-1px);
+        }
+
+        .user-info:active {
+            transform: translateY(0);
+        }
+
+        /* 添加点击波纹效果 */
+        .user-info::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 102, 204, 0.1);
+            border-radius: 20px;
+            opacity: 0;
+            transform: scale(1.2);
+            transition: all 0.3s ease;
+        }
+
+        .user-info:active::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .user-name {
+            font-size: 14px;
+            color: #1d1d1f;
+            font-weight: 500;
+        }
+
+        /* 导航栏样式 */
+        .main-menu {
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        .main-menu ul {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-menu li {
+            position: relative;
+        }
+
+        .main-menu a {
+            color: #1d1d1f;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 12px 0;
+            display: block;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .main-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #0066CC;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .main-menu a:hover {
+            color: #0066CC;
+        }
+
+        .main-menu .active a {
+            color: #0066CC;
+        }
+
+        .main-menu .active a::after {
+            transform: scaleX(1);
+        }
+
+        /* 客服热线样式 */
+        .hotline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f5f5f7;
+        }
+
+        .hotline p {
+            margin: 0;
+            font-size: 14px;
+            color: #1d1d1f;
+        }
+
+        .hotline span {
+            display: block;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 添加内容区域的上边距，防止被 header 遮挡 */
+        body {
+            padding-top: 120px; /* 根据实际 header 高度调整 */
+        }
+
+        .ripple {
+            position: absolute;
+            background: rgba(0, 102, 204, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+            width: 100px;
+            height: 100px;
+            transform: translate(-50%, -50%) scale(0);
+            animation: ripple 0.6s linear;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: translate(-50%, -50%) scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <div class="mobile-promotion">
+        <span>Grand opening, <strong>up to 15%</strong> off all items. Only <strong>3 days</strong> left</span></div>
+    <div class="header-middle header-middle-ptb-1 d-none d-lg-block">
+        <div class="container">
+            <div class="header-wrap">
+                <div class="search-container">
+                    <form class="search-form" th:action="toGoods">
+                        <input name="names" type="text" placeholder="搜索景点...">
+                        <button type="submit"><i class="fi-rs-search"></i></button>
+                    </form>
+                </div>
+
+                <div class="header-action-right">
+                    <div class="header-action-2">
+                        <div class="user-info" th:if="${session.get('type') == '2'}" onclick="toUserCenter()">
+                            <div class="user-avatar">
+                                <img th:src="${session.get('photo')}" alt="user">
+                            </div>
+                            <span class="user-name" th:text="${session.get('user').realname}"></span>
+                        </div>
+
+                        <div class="login-btn" th:if="${session.get('type') == null}">
+                            <a href="outLogin" class="btn-login">登录 / 注册</a>
+                        </div>
+
+                        <div class="logout-btn" th:if="${session.get('type') == '2'}">
+                            <a href="outLogin" class="btn-logout">退出</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-bottom header-bottom-bg-color sticky-bar">
+        <div class="container">
+            <div class="header-wrap header-space-between position-relative">
+                <div class="logo logo-width-1 d-block d-lg-none">
+                    <a href="toIndex"><img src="static/picture/logo.svg" alt="logo"></a>
+                </div>
+                <div class="header-nav d-none d-lg-flex">
+                    <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">
+                        <nav>
+                            <ul>
+                                <li th:class="${#strings.contains(#httpServletRequest.requestURI, 'Index')} ? 'active' : ''">
+                                    <a th:href="toIndex">首页</a>
+                                </li>
+                                <li th:class="${#strings.contains(#httpServletRequest.requestURI, 'Goods')} ? 'active' : ''">
+                                    <a th:href="toGoods">旅游</a>
+                                </li>
+                                <li th:class="${#strings.contains(#httpServletRequest.requestURI, 'Food')} ? 'active' : ''">
+                                    <a th:href="toFood">美食</a>
+                                </li>
+                                <li th:class="${#strings.contains(#httpServletRequest.requestURI, 'Board')} ? 'active' : ''">
+                                    <a th:href="toBoard">旅游攻略动态</a>
+                                </li>
+                                <li th:class="${#strings.contains(#httpServletRequest.requestURI, 'Hotel')} ? 'active' : ''">
+                                    <a th:href="toHotel">酒店住宿</a>
+                                </li>
+                                <li th:if="${session.get('type') == '2'}" 
+                                    th:class="${#strings.contains(#httpServletRequest.requestURI, 'Shopcart')} ? 'active' : ''">
+                                    <a th:href="ShopcartList">我的收藏</a>
+                                </li>
+                                <li th:if="${session.get('type') == '2'}"
+                                    th:class="${#strings.contains(#httpServletRequest.requestURI, 'User')} ? 'active' : ''">
+                                    <a th:href="UserList">个人中心</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="hotline d-none d-lg-flex">
+                    <img src="static/picture/icon-headphone.svg" alt="hotline">
+                    <p>1900 - 888<span>24/7 客服</span></p>
+                </div>
+                <div class="header-action-icon-2 d-block d-lg-none">
+                    <div class="burger-icon burger-icon-white">
+                        <span class="burger-icon-top"></span>
+                        <span class="burger-icon-mid"></span>
+                        <span class="burger-icon-bottom"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 搜索框动画
+    const searchInput = document.querySelector('.search-form input');
+    const searchContainer = document.querySelector('.search-container');
+
+    searchInput.addEventListener('focus', () => {
+        searchContainer.style.maxWidth = '700px';
+    });
+
+    searchInput.addEventListener('blur', () => {
+        searchContainer.style.maxWidth = '500px';
+    });
+
+    // 添加用户中心跳转函数
+    window.toUserCenter = function() {
+        window.location.href = 'UserList';
+    }
+
+    // 添加点击反馈效果
+    const userInfo = document.querySelector('.user-info');
+    if (userInfo) {
+        userInfo.addEventListener('click', function(e) {
+            // 创建波纹效果
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple');
+            this.appendChild(ripple);
+
+            // 设置波纹位置
+            const rect = this.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+
+            // 移除波纹
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    }
+});
+</script>
+
+</html>

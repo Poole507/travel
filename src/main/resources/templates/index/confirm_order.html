@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>订单确认 | 旅游网站</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="确认您的订单并完成支付">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="static/picture/favicon.svg">
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="static/css/main.css">
+    
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            color: #1d1d1f;
+            background-color: #f5f5f7;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* 主内容区域 */
+        .main {
+            padding-top: 50px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #f0f5ff 0%, #f5f5f7 300px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 页面标题 */
+        .page-title {
+            margin-bottom: 40px;
+        }
+        
+        .page-title h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        
+        .page-title h6 {
+            font-size: 16px;
+            color: #515154;
+            font-weight: 400;
+        }
+        
+        .page-title h6 .text-brand {
+            color: #0066CC;
+            font-weight: 600;
+        }
+        
+        /* 订单表单 */
+        .order-form-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .order-form-container h4 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .order-form-container h4:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: #0066CC;
+            border-radius: 3px;
+        }
+        
+        /* 表单控件 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e2e2e2;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #1d1d1f;
+            background: #f9f9fb;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #0066CC;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+            outline: none;
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* 按钮 */
+        .btn {
+            background: #0066CC;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.2);
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background: #0055b3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+        }
+        
+        .btn i {
+            margin-left: 8px;
+        }
+        
+        /* 订单摘要 */
+        .order-summary {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.08);
+            padding: 30px;
+            height: 100%;
+        }
+        
+        .order-summary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f5f5f7;
+        }
+        
+        .order-summary-header h4 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin: 0;
+        }
+        
+        .order-summary-header h6 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ff2d55;
+            margin: 0;
+        }
+        
+        .divider {
+            height: 1px;
+            background: #f5f5f7;
+            margin: 20px 0;
+        }
+        
+        /* 订单商品列表 */
+        .order-items {
+            margin-bottom: 20px;
+        }
+        
+        .order-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f5f5f7;
+        }
+        
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-right: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .item-details {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 5px;
+        }
+        
+        .item-quantity {
+            font-size: 14px;
+            color: #86868b;
+        }
+        
+        .item-price {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0066CC;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 991px) {
+            .order-summary {
+                margin-top: 30px;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .page-title h1 {
+                font-size: 28px;
+            }
+            
+            .order-form-container,
+            .order-summary {
+                padding: 20px;
+            }
+            
+            .item-image {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!-- 头部 -->
+<!-- <div th:include="index/header"></div> -->
+
+<main class="main">
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="row">
+            <div class="col-lg-8 mb-40">
+                <div class="page-title">
+                    <h1>订单确认</h1>
+                    <h6>共 <span class="text-brand" th:text="${cartList.size()}">0</span> 件景点门票</h6>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- 订单表单 -->
+            <div class="col-lg-7">
+                <div class="order-form-container">
+                    <h4>订单信息</h4>
+                    <form method="post" th:action="addOrders" id="orderForm">
+                        <div class="row">
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control" required="" th:value="${session.get('realname')}" name="username" id="username" placeholder="预订人姓名">
+                            </div>
+                            <div class="form-group col-lg-6">
+                                <input type="text" class="form-control" required="" th:value="${session.get('user').phone}" name="phone" id="phone" placeholder="联系电话">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <textarea class="form-control" rows="5" placeholder="备注信息（可选）" name="content"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn">
+                            确认支付 <i class="fi-rs-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- 订单摘要 -->
+            <div class="col-lg-5">
+                <div class="order-summary">
+                    <div class="order-summary-header">
+                        <h4>订单摘要</h4>
+                        <h6 th:text="'￥'+${total}">￥0</h6>
+                        <input type="hidden" name="money" th:value="${total}" form="orderForm">
+                    </div>
+                    
+                    <div class="order-items">
+                        <div class="order-item" th:each="data:${cartList}">
+                            <input type="hidden" name="goodslist" th:value="${data.id}" form="orderForm">
+                            <div class="item-image">
+                                <img th:src="${data.goods.photo}" alt="景点图片">
+                            </div>
+                            <div class="item-details">
+                                <div class="item-name" th:text="${data.goods.names}">景点名称</div>
+                                <div class="item-quantity" th:text="'数量: ' + ${data.nums}">数量: 1</div>
+                            </div>
+                            <div class="item-price" th:text="'￥' + ${data.goods.price}">￥0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="order-total">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>总计</span>
+                            <span class="total-price" th:text="'￥' + ${total}">￥0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 页脚 -->
+<div th:include="index/footer"></div>
+
+<!-- 预加载器 -->
+<div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="text-center">
+                <img src="static/picture/loading.gif" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 脚本 -->
+<script src="static/js/modernizr-3.6.0.min.js"></script>
+<script src="static/js/jquery-3.6.0.min.js"></script>
+<script src="static/js/jquery-migrate-3.3.0.min.js"></script>
+<script src="static/js/bootstrap.bundle.min.js"></script>
+<script src="static/js/slick.js"></script>
+<script src="static/js/jquery.syotimer.min.js"></script>
+<script src="static/js/wow.js"></script>
+<script src="static/js/jquery-ui.js"></script>
+<script src="static/js/perfect-scrollbar.js"></script>
+<script src="static/js/magnific-popup.js"></script>
+<script src="static/js/select2.min.js"></script>
+<script src="static/js/waypoints.js"></script>
+<script src="static/js/counterup.js"></script>
+<script src="static/js/jquery.countdown.min.js"></script>
+<script src="static/js/images-loaded.js"></script>
+<script src="static/js/isotope.js"></script>
+<script src="static/js/scrollup.js"></script>
+<script src="static/js/jquery.vticker-min.js"></script>
+<script src="static/js/jquery.theia.sticky.js"></script>
+<script src="static/js/jquery.elevatezoom.js"></script>
+<script src="static/js/main.js"></script>
+<script src="static/js/shop.js"></script>
+
+<link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+<script th:src="@{/assets/libs/sweetalert2/sweetalert2.min.js}"></script>
+<script th:src="@{/assets/js/pages/sweet-alerts.init.js}"></script>
+
+<script>
+    // 表单验证
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        
+        form.addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value;
+            const phone = document.getElementById('phone').value;
+            
+            if (!username || !phone) {
+                e.preventDefault();
+                Swal.fire({
+                    title: "信息不完整",
+                    text: "请填写预订人姓名和联系电话",
+                    icon: "warning"
+                });
+                return false;
+            }
+            
+            // 手机号验证
+            const phoneRegex = /^1[3-9]\d{9}$/;
+            if (!phoneRegex.test(phone)) {
+                e.preventDefault();
+                Swal.fire({
+                    title: "手机号格式错误",
+                    text: "请输入正确的手机号码",
+                    icon: "warning"
+                });
+                return false;
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>旅游攻略 | 旅游网站</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="探索世界各地的旅游攻略和旅行体验">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="static/picture/favicon.svg">
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="static/css/main.css">
+    
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            color: #1d1d1f;
+            background-color: #f5f5f7;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* 页面标题部分 */
+        .board-header {
+            background: linear-gradient(135deg, #0066CC 0%, #5AC8FA 100%);
+            padding: 60px 0;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.15);
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header-content h1 {
+            color: white;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        .header-visual {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .visual-element {
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        .visual-element:before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -150px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+        }
+        
+        /* 搜索框样式 */
+        .search-container {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .search-form {
+            position: relative;
+            width: 100%;
+        }
+        
+        .search-form input {
+            width: 100%;
+            padding: 18px 60px 18px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .search-form input:focus {
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+        
+        .search-form button {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #0066CC;
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 102, 204, 0.3);
+        }
+        
+        .search-form button:hover {
+            background: #004999;
+            transform: translateY(-50%) scale(1.05);
+        }
+        
+        .search-form button i {
+            font-size: 18px;
+        }
+        
+        /* 主内容区域 */
+        .main {
+            padding-top: 30px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* 筛选工具栏 */
+        .filter-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .total-count {
+            font-size: 16px;
+            color: #515154;
+        }
+        
+        .total-count strong {
+            color: #0066CC;
+            font-weight: 600;
+        }
+        
+        .page-size-selector {
+            position: relative;
+        }
+        
+        .page-size-toggle {
+            display: flex;
+            align-items: center;
+            background: #f5f5f7;
+            border-radius: 10px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-size-toggle:hover {
+            background: #e8f3ff;
+        }
+        
+        .page-size-toggle span {
+            margin-left: 5px;
+            font-size: 14px;
+            color: #515154;
+        }
+        
+        .page-size-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            min-width: 120px;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .page-size-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .page-size-dropdown ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .page-size-dropdown li {
+            padding: 0;
+        }
+        
+        .page-size-dropdown a {
+            display: block;
+            padding: 8px 20px;
+            color: #515154;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        
+        .page-size-dropdown a:hover {
+            background: #f5f5f7;
+            color: #0066CC;
+        }
+        
+        .page-size-dropdown a.active {
+            background: #e8f3ff;
+            color: #0066CC;
+            font-weight: 500;
+        }
+        
+        /* 攻略卡片 */
+        .board-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .board-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .board-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 102, 204, 0.1);
+        }
+        
+        .board-image {
+            position: relative;
+            height: 400px;
+            overflow: hidden;
+        }
+        
+        .board-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .board-card:hover .board-image img {
+            transform: scale(1.03);
+        }
+        
+        .board-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%);
+            pointer-events: none;
+        }
+        
+        .board-content {
+            padding: 30px;
+        }
+        
+        .board-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1d1d1f;
+            line-height: 1.3;
+        }
+        
+        .board-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .board-info {
+            display: flex;
+            align-items: center;
+            color: #86868b;
+            font-size: 14px;
+        }
+        
+        .board-author {
+            margin-right: 20px;
+        }
+        
+        .board-date {
+            display: flex;
+            align-items: center;
+        }
+        
+        .board-date i {
+            margin-right: 5px;
+            color: #0066CC;
+        }
+        
+        .read-more {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background: #0066CC;
+            color: white;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.2);
+        }
+        
+        .read-more:hover {
+            background: #004999;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+        }
+        
+        .read-more i {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        .read-more:hover i {
+            transform: translateX(3px);
+        }
+        
+        /* 分页 */
+        .pagination-area {
+            margin-top: 50px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 10px;
+        }
+        
+        .page-item {
+            margin: 0;
+        }
+        
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            color: #515154;
+            text-decoration: none;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .page-link:hover {
+            background: #e8f3ff;
+            color: #0066CC;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.1);
+        }
+        
+        .page-link.bg-primary {
+            background: #0066CC !important;
+            color: white !important;
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.2);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 991px) {
+            .board-header {
+                padding: 40px 0;
+            }
+            
+            .header-content h1 {
+                font-size: 32px;
+            }
+            
+            .board-image {
+                height: 350px;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .board-header {
+                padding: 30px 0;
+                margin-bottom: 30px;
+            }
+            
+            .header-content h1 {
+                font-size: 28px;
+            }
+            
+            .header-content p {
+                font-size: 16px;
+            }
+            
+            .search-form input {
+                padding: 15px 55px 15px 20px;
+            }
+            
+            .filter-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .board-image {
+                height: 250px;
+            }
+            
+            .board-content {
+                padding: 20px;
+            }
+            
+            .board-title {
+                font-size: 20px;
+            }
+            
+            .board-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!-- 头部 -->
+<div th:include="index/header"></div>
+
+<main class="main">
+    <!-- 页面标题部分 -->
+    <section class="board-header">
+        <div class="container">
+            <div class="header-content">
+                <h1>探索旅游攻略</h1>
+                <p>发现世界各地的精彩旅行体验和专业旅游建议</p>
+                
+                <div class="search-container">
+                    <form class="search-form" th:action="toBoard">
+                        <input name="title" type="text" placeholder="搜索旅游攻略...">
+                        <button type="submit"><i class="fi-rs-search"></i></button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="header-visual">
+                <div class="visual-element"></div>
+            </div>
+        </div>
+    </section>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 m-auto">
+                <!-- 筛选工具栏 -->
+                <div class="filter-bar">
+                    <div class="total-count">
+                        共 <strong th:text="${pageInfo.total}">0</strong> 条旅游攻略
+                    </div>
+                    
+                    <div class="page-size-selector">
+                        <div class="page-size-toggle" id="pageSizeToggle">
+                            <i class="fi-rs-apps"></i>
+                            <span>每页: <strong th:text="${pageInfo.pageSize}">10</strong></span>
+                        </div>
+                        
+                        <div class="page-size-dropdown" id="pageSizeDropdown">
+                            <ul>
+                                <li><a th:class="${pageInfo.pageSize == 5 ? 'active' : ''}" th:href="@{/toBoard(pageSize=5)}">5</a></li>
+                                <li><a th:class="${pageInfo.pageSize == 10 ? 'active' : ''}" th:href="@{/toBoard(pageSize=10)}">10</a></li>
+                                <li><a th:class="${pageInfo.pageSize == 20 ? 'active' : ''}" th:href="@{/toBoard(pageSize=20)}">20</a></li>
+                                <li><a th:class="${pageInfo.pageSize == 30 ? 'active' : ''}" th:href="@{/toBoard(pageSize=30)}">30</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 攻略列表 -->
+                <div class="board-list">
+                    <div class="board-card" th:each="data:${pageInfo.list}" th:onclick="'window.location.href=\'' + @{/toBoard_detail(id=${data.id})} + '\''">
+                        <div class="board-image">
+                            <img th:src="${data.photo}" alt="旅游攻略图片">
+                        </div>
+                        <div class="board-content">
+                            <h3 class="board-title" th:text="${data.title}">攻略标题</h3>
+                            <div class="board-meta">
+                                <div class="board-info">
+                                    <div class="board-author">
+                                        <i class="fi-rs-user"></i>
+                                        <span th:text="${data.editor} + ' 发布'">作者</span>
+                                    </div>
+                                    <div class="board-date">
+                                        <i class="fi-rs-calendar"></i>
+                                        <span th:text="${data.create_time}">发布时间</span>
+                                    </div>
+                                </div>
+                                <a th:href="@{/toBoard_detail(id=${data.id})}" class="read-more">
+                                    了解更多 <i class="fi-rs-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 分页 -->
+                <div class="pagination-area">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="page-item" th:if="${pageInfo.pageNum > pageInfo.getFirstPage() && pageInfo.prePage != 0}">
+                                <a class="page-link" th:href="'/'+${url}+'?pageNum='+${pageInfo.prePage}">
+                                    <i class="fi-rs-arrow-small-left"></i>
+                                </a>
+                            </li>
+
+                            <li class="page-item" th:each="i:${pageInfo.navigatepageNums}">
+                                <a class="page-link" th:class="${pageInfo.pageNum == i ? 'page-link bg-primary' : 'page-link'}" 
+                                   th:href="'/'+${url}+'?pageNum='+${i}" th:text="${i}"></a>
+                            </li>
+
+                            <li class="page-item" th:if="${pageInfo.pageNum < pageInfo.getLastPage()}">
+                                <a class="page-link" th:href="'/'+${url}+'?pageNum='+${pageInfo.nextPage}">
+                                    <i class="fi-rs-arrow-small-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 页脚 -->
+<div th:include="index/footer"></div>
+
+<!-- 预加载器 -->
+<div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="text-center">
+                <img src="static/picture/loading.gif" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 脚本 -->
+<script src="static/js/modernizr-3.6.0.min.js"></script>
+<script src="static/js/jquery-3.6.0.min.js"></script>
+<script src="static/js/jquery-migrate-3.3.0.min.js"></script>
+<script src="static/js/bootstrap.bundle.min.js"></script>
+<script src="static/js/slick.js"></script>
+<script src="static/js/jquery.syotimer.min.js"></script>
+<script src="static/js/wow.js"></script>
+<script src="static/js/jquery-ui.js"></script>
+<script src="static/js/perfect-scrollbar.js"></script>
+<script src="static/js/magnific-popup.js"></script>
+<script src="static/js/select2.min.js"></script>
+<script src="static/js/waypoints.js"></script>
+<script src="static/js/counterup.js"></script>
+<script src="static/js/jquery.countdown.min.js"></script>
+<script src="static/js/images-loaded.js"></script>
+<script src="static/js/isotope.js"></script>
+<script src="static/js/scrollup.js"></script>
+<script src="static/js/jquery.vticker-min.js"></script>
+<script src="static/js/jquery.theia.sticky.js"></script>
+<script src="static/js/jquery.elevatezoom.js"></script>
+<script src="static/js/main.js"></script>
+<script src="static/js/shop.js"></script>
+
+<script>
+    // 页面大小选择器交互
+    document.addEventListener('DOMContentLoaded', function() {
+        const pageSizeToggle = document.getElementById('pageSizeToggle');
+        const pageSizeDropdown = document.getElementById('pageSizeDropdown');
+        
+        if (pageSizeToggle && pageSizeDropdown) {
+            pageSizeToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                pageSizeDropdown.classList.toggle('active');
+            });
+            
+            document.addEventListener('click', function() {
+                pageSizeDropdown.classList.remove('active');
+            });
+            
+            pageSizeDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+        
+        // 防止链接点击事件冒泡到卡片
+        const boardLinks = document.querySelectorAll('.board-card a');
+        boardLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    });
+</script>
+</body>
+</html>

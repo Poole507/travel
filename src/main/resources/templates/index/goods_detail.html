@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>旅游网站</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="static/picture/favicon.svg">
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="static/css/main.css">
+    
+    <!-- Apple风格CSS -->
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            color: #1d1d1f;
+            background-color: #f5f5f7;
+            line-height: 1.5;
+        }
+        
+        /* 产品详情容器 */
+        .product-detail {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 102, 204, 0.08);
+            padding: 30px;
+            margin-top: 30px;
+        }
+        
+        /* 图片区域 */
+        .detail-gallery {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.1);
+            height: 500px;
+            width: 100%;
+        }
+        
+        .product-image-slider {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .product-image-slider figure {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .product-image-slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+            transition: transform 0.5s ease;
+        }
+        
+        .detail-gallery:hover .product-image-slider img {
+            transform: scale(1.02);
+        }
+        
+        .zoom-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #0066CC;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+        
+        .zoom-icon:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+        
+        /* 产品信息区域 */
+        .detail-info {
+            padding: 0 20px;
+        }
+        
+        .title-detail {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        /* 价格区域 */
+        .product-price-cover {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #f5f5f7;
+        }
+        
+        .current-price {
+            font-size: 28px;
+            font-weight: 600;
+            color: #0066CC;
+        }
+        
+        .save-price {
+            background: #E8F3FF;
+            color: #0066CC;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .old-price {
+            color: #86868b;
+            text-decoration: line-through;
+        }
+        
+        /* 描述区域 */
+        .short-desc {
+            color: #515154;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f5f5f7;
+            border-radius: 16px;
+        }
+        
+        .short-desc p {
+            margin: 0;
+        }
+        
+        /* 收藏按钮 */
+        .button-add-to-cart {
+            background: #0066CC;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .button-add-to-cart:hover {
+            background: #004999;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+        }
+        
+        .button-add-to-cart i {
+            font-size: 18px;
+        }
+        
+        /* 产品信息列表 */
+        .product-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .info-card {
+            background: #f5f5f7;
+            border-radius: 16px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .info-card:hover {
+            background: #E8F3FF;
+            transform: translateY(-3px);
+        }
+        
+        .info-label {
+            color: #86868b;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: #0066CC;
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        /* 选项卡区域 */
+        .tab-style3 {
+            margin-top: 50px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            border: none;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-link {
+            background: #f5f5f7;
+            color: #1d1d1f;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .nav-link:hover {
+            background: #E8F3FF;
+            color: #0066CC;
+        }
+        
+        .nav-link.active {
+            background: #0066CC;
+            color: white;
+        }
+        
+        .tab-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 102, 204, 0.05);
+        }
+        
+        /* 详情内容 */
+        .tab-pane {
+            color: #515154;
+            line-height: 1.6;
+        }
+        
+        .tab-pane p {
+            margin-bottom: 15px;
+        }
+        
+        .tab-pane img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        
+        /* 景点参数表格 */
+        .params-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 0;
+        }
+        
+        .params-table th, 
+        .params-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f5f5f7;
+        }
+        
+        .params-table th {
+            width: 30%;
+            color: #86868b;
+            font-weight: 500;
+            text-align: left;
+        }
+        
+        .params-table td {
+            color: #1d1d1f;
+        }
+        
+        .params-table tr:last-child th,
+        .params-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .params-table tr:hover {
+            background-color: #f9f9fb;
+        }
+        
+        /* 评价区域 */
+        .comments-area {
+            margin-bottom: 40px;
+        }
+        
+        .comments-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #1d1d1f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .comments-title::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 20px;
+            background: #0066CC;
+            border-radius: 2px;
+        }
+        
+        .comment-card {
+            background: #f5f5f7;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .comment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.08);
+        }
+        
+        .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .comment-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            border: 2px solid white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comment-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .comment-user {
+            flex: 1;
+        }
+        
+        .comment-username {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin: 0 0 5px;
+        }
+        
+        .comment-date {
+            font-size: 13px;
+            color: #86868b;
+        }
+        
+        .comment-body {
+            color: #515154;
+            line-height: 1.6;
+        }
+        
+        /* 评论表单 */
+        .comment-form {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 102, 204, 0.05);
+            margin-top: 30px;
+        }
+        
+        .form-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #1d1d1f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-title::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 20px;
+            background: #0066CC;
+            border-radius: 2px;
+        }
+        
+        .comment-form textarea {
+            border: 1px solid #e2e2e2;
+            border-radius: 16px;
+            padding: 15px;
+            resize: none;
+            transition: all 0.3s ease;
+            width: 100%;
+            min-height: 150px;
+            font-family: inherit;
+            font-size: 15px;
+        }
+        
+        .comment-form textarea:focus {
+            border-color: #0066CC;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            outline: none;
+        }
+        
+        .button-contactForm {
+            background: #0066CC;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .button-contactForm:hover {
+            background: #004999;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 992px) {
+            .detail-gallery {
+                height: 400px;
+                margin-bottom: 30px;
+            }
+            
+            .product-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .detail-gallery {
+                height: 350px;
+            }
+            
+            .title-detail {
+                font-size: 26px;
+            }
+            
+            .current-price {
+                font-size: 24px;
+            }
+            
+            .nav-link {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+        }
+        
+        .empty-content {
+            text-align: center;
+            padding: 40px 20px;
+            background: #f5f5f7;
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+        
+        .empty-icon {
+            margin-bottom: 20px;
+            display: inline-flex;
+            padding: 20px;
+            background: rgba(0, 102, 204, 0.1);
+            border-radius: 50%;
+        }
+        
+        .empty-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 10px;
+        }
+        
+        .empty-desc {
+            font-size: 16px;
+            color: #86868b;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        /* 评论表单样式优化 */
+        .form-control {
+            border: 1px solid #e2e2e2;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            border-color: #0066CC;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+            outline: none;
+        }
+        
+        .button-contactForm {
+            background: #0066CC;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .button-contactForm:hover {
+            background: #004999;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+<!-- 页头 -->
+<div th:include="index/header"></div>
+<br>
+
+<main class="main">
+    <div class="container mb-30">
+        <div class="row">
+            <div class="col-xl-10 col-lg-12 m-auto">
+                <div class="product-detail accordion-detail">
+                    <div class="row mb-50 mt-30">
+                        <!-- 图片区域 -->
+                        <div class="col-md-6 col-sm-12 col-xs-12 mb-md-0 mb-sm-5">
+                            <div class="detail-gallery">
+                                <span class="zoom-icon"><i class="fi-rs-search"></i></span>
+                                <div class="product-image-slider">
+                                    <figure>
+                                        <img th:src="${goods.photo}" alt="景点图片">
+                                    </figure>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 信息区域 -->
+                        <div class="col-md-6 col-sm-12 col-xs-12">
+                            <div class="detail-info">
+                                <h2 class="title-detail" th:text="${goods.names}"></h2>
+                                
+                                <div class="clearfix product-price-cover">
+                                    <div class="product-price primary-color float-left">
+                                        <span class="current-price text-brand" th:text="'￥'+${goods.price}"></span>
+                                        <span>
+                                            <span class="save-price font-md color3 ml-15" th:text="${#numbers.formatDecimal((goods.normalprice-goods.price)/goods.normalprice*100,1,2)}+'%优惠'"></span>
+                                            <span class="old-price font-md ml-15" th:text="'￥'+${goods.normalprice}"></span>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="short-desc mb-30">
+                                    <p class="font-lg" th:text="${goods.content}"></p>
+                                </div>
+                                
+                                <div class="detail-extralink mb-50">
+                                    <div class="product-extra-link2">
+                                        <button type="submit" th:onclick="addcart([[${goods.id}]])" class="button button-add-to-cart">
+                                            <i class="fi-rs-shopping-cart"></i>加入收藏
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- 信息卡片 -->
+                                <div class="product-info-grid">
+                                    <div class="info-card">
+                                        <div class="info-label">景点类型</div>
+                                        <div class="info-value" th:text="${goods.category.name}"></div>
+                                    </div>
+                                    
+                                    <div class="info-card">
+                                        <div class="info-label">详细地址</div>
+                                        <div class="info-value" th:text="${goods.address}"></div>
+                                    </div>
+                                    
+                                    <div class="info-card">
+                                        <div class="info-label">游客容纳人数</div>
+                                        <div class="info-value" th:text="${goods.numbers}"></div>
+                                    </div>
+                                    
+                                    <div class="info-card">
+                                        <div class="info-label">发布时间</div>
+                                        <div class="info-value" th:text="${goods.createtime}"></div>
+                                    </div>
+                                    
+                                    <div class="info-card">
+                                        <div class="info-label">浏览量</div>
+                                        <div class="info-value" th:text="${goods.seenums}"></div>
+                                    </div>
+                                    
+                                    <div class="info-card">
+                                        <div class="info-label">旅游人次</div>
+                                        <div class="info-value" th:text="${goods.salenums}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 选项卡区域 -->
+                    <div class="product-info">
+                        <div class="tab-style3">
+                            <ul class="nav nav-tabs text-uppercase">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="Description-tab" data-bs-toggle="tab" href="#Description">详情</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Additional-info-tab" data-bs-toggle="tab" href="#Additional-info">景点参数</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="Reviews-tab" data-bs-toggle="tab" href="#Reviews">评价</a>
+                                </li>
+                            </ul>
+                            
+                            <div class="tab-content shop_info_tab entry-main-content">
+                                <!-- 详情选项卡 -->
+                                <div class="tab-pane fade show active" id="Description">
+                                    <div class="tab-content-inner">
+                                        <!-- 当详情内容为空时显示提示信息 -->
+                                        <div th:if="${goods.detail == null || goods.detail == ''}" class="empty-content">
+                                            <div class="empty-icon">
+                                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#0066CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <path d="M12 8V12" stroke="#0066CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                    <circle cx="12" cy="16" r="0.5" stroke="#0066CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </div>
+                                            <h3 class="empty-title">暂无详细信息</h3>
+                                            <p class="empty-desc">该景点暂时没有详细介绍，您可以查看其他信息了解更多。</p>
+                                        </div>
+                                        
+                                        <!-- 当详情内容不为空时显示内容 -->
+                                        <div th:if="${goods.detail != null && goods.detail != ''}" th:utext="${goods.detail}"></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 景点参数选项卡 -->
+                                <div class="tab-pane fade" id="Additional-info">
+                                    <table class="params-table">
+                                        <tbody>
+                                            <tr>
+                                                <th>类型:</th>
+                                                <td th:text="${goods.category.name}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>详细地址:</th>
+                                                <td th:text="${goods.address}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>游客容纳人数:</th>
+                                                <td th:text="${goods.numbers}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>发布时间:</th>
+                                                <td th:text="${goods.createtime}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>浏览量:</th>
+                                                <td th:text="${goods.seenums}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>旅游人次:</th>
+                                                <td th:text="${goods.salenums}"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>位置:</th>
+                                                <td th:text="${goods.provinces.province_Name}+${goods.cities.city_Name}+${goods.areas.area_Name}+${goods.address}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- 评价选项卡 -->
+                                <div class="tab-pane fade" id="Reviews">
+                                    <div class="comments-area">
+                                        <h4 class="comments-title">用户评价</h4>
+                                        
+                                        <!-- 当评论列表为空时显示提示信息 -->
+                                        <div th:if="${commentsList == null || commentsList.isEmpty()}" class="empty-content">
+                                            <div class="empty-icon">
+                                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke="#0066CC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                            </div>
+                                            <h3 class="empty-title">暂无评价</h3>
+                                            <p class="empty-desc">该景点暂时没有用户评价，成为第一个评价的用户吧！</p>
+                                        </div>
+                                        
+                                        <!-- 当评论列表不为空时显示评论 -->
+                                        <div th:if="${commentsList != null && !commentsList.isEmpty()}" class="comment-list">
+                                            <div class="comment-card" th:each="data:${commentsList}">
+                                                <div class="comment-header">
+                                                    <div class="comment-avatar">
+                                                        <img th:src="${data.user.photo}" alt="用户头像">
+                                                    </div>
+                                                    <div class="comment-user">
+                                                        <h5 class="comment-username" th:text="${data.user.realname}"></h5>
+                                                        <div class="comment-date" th:text="${data.create_time}"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="comment-body" th:text="${data.content}"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 评论表单 -->
+                                    <div class="comment-form" th:if="${canaddcomments !=null}">
+                                        <h4 class="form-title">发布评价</h4>
+                                        
+                                        <div class="row">
+                                            <div class="col-lg-8 col-md-12">
+                                                <form class="form-contact" id="commentForm">
+                                                    <input type="hidden" name="goods_id" id="goods_id" th:value="${goods.id}">
+                                                    <div class="form-group">
+                                                        <textarea class="form-control" name="content" id="comment" rows="6" placeholder="分享您的旅游体验..."></textarea>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button type="button" id="addComments" class="button-contactForm">提交评价</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- 页脚 -->
+<div th:include="index/footer"></div>
+
+<!-- 预加载器 -->
+<div id="preloader-active">
+    <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+            <div class="text-center">
+                <img src="static/picture/loading.gif" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 脚本 -->
+<script src="static/js/modernizr-3.6.0.min.js"></script>
+<script src="static/js/jquery-3.6.0.min.js"></script>
+<script src="static/js/jquery-migrate-3.3.0.min.js"></script>
+<script src="static/js/bootstrap.bundle.min.js"></script>
+<script src="static/js/slick.js"></script>
+<script src="static/js/jquery.syotimer.min.js"></script>
+<script src="static/js/wow.js"></script>
+<script src="static/js/jquery-ui.js"></script>
+<script src="static/js/perfect-scrollbar.js"></script>
+<script src="static/js/magnific-popup.js"></script>
+<script src="static/js/select2.min.js"></script>
+<script src="static/js/waypoints.js"></script>
+<script src="static/js/counterup.js"></script>
+<script src="static/js/jquery.countdown.min.js"></script>
+<script src="static/js/images-loaded.js"></script>
+<script src="static/js/isotope.js"></script>
+<script src="static/js/scrollup.js"></script>
+<script src="static/js/jquery.vticker-min.js"></script>
+<script src="static/js/jquery.theia.sticky.js"></script>
+<script src="static/js/jquery.elevatezoom.js"></script>
+<script src="static/js/main.js"></script>
+<script src="static/js/shop.js"></script>
+
+<link href="assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+<script th:src="@{/assets/libs/sweetalert2/sweetalert2.min.js}"></script>
+<script th:src="@{/assets/js/pages/sweet-alerts.init.js}"></script>
+
+<script>
+    // 评价提交
+    $("#addComments").click(function() {
+        $.ajax({
+            cache: true,
+            type: "post",
+            url: "addComments",
+            data: $("#commentForm").serialize(),
+            async: false,
+            success: function(e) {
+                if (e) {
+                    Swal.fire({
+                        title: "评价成功!",
+                        icon: "success",
+                        confirmButtonColor: "#0066CC"
+                    }).then(function() {
+                        document.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: "评价失败!",
+                        icon: "error",
+                        confirmButtonColor: "#0066CC"
+                    });
+                }
+            }
+        });
+    });
+
+    // 收藏功能
+    function addcart(id) {
+        Swal.fire({
+            title: "确定加入收藏吗?",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#0066CC",
+            cancelButtonColor: "#86868b",
+            confirmButtonText: '确认',
+            cancelButtonText: '取消'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    cache: true,
+                    url: "addShopcart",
+                    data: {"goods_id": id, "nums": 1},
+                    type: "post",
+                    async: false,
+                    success: function(data) {
+                        if (data == 'yes') {
+                            Swal.fire({
+                                title: "加入成功!",
+                                text: "已添加到您的收藏",
+                                icon: "success",
+                                confirmButtonColor: "#0066CC"
+                            }).then(function() {
+                                document.location.reload();
+                            });
+                        } else if (data == 'no') {
+                            Swal.fire({
+                                title: "加入失败!",
+                                text: "请先登录",
+                                icon: "error",
+                                confirmButtonColor: "#0066CC"
+                            }).then(function() {
+                                document.location.reload();
+                            });
+                        }
+                    },
+                    complete: function(xhr, status) {
+                        if (status == 'error') {
+                            Swal.fire({
+                                title: "操作失败!",
+                                text: "请先登录",
+                                icon: "error",
+                                confirmButtonColor: "#0066CC"
+                            });
+                        }
+                        
+                        var REDIRECT = xhr.getResponseHeader("REDIRECT");
+                        if (REDIRECT == "REDIRECT") {
+                            var win = window;
+                            while (win != win.top) {
+                                win = win.top;
+                            }
+                            win.location.href = xhr.getResponseHeader("CONTEXTPATH");
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
+    // 图片放大功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const zoomIcon = document.querySelector('.zoom-icon');
+        const productImage = document.querySelector('.product-image-slider img');
+        
+        if (zoomIcon && productImage) {
+            zoomIcon.addEventListener('click', function() {
+                const imageUrl = productImage.getAttribute('src');
+                
+                Swal.fire({
+                    imageUrl: imageUrl,
+                    imageAlt: '景点图片',
+                    width: '80%',
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                    padding: '10px',
+                    background: '#fff',
+                    backdrop: `rgba(0,0,0,0.8)`
+                });
+            });
+        }
+    });
+</script>
+</body>
+</html>
